@@ -92,7 +92,7 @@ fn main() -> ExitCode {
     // The window's settings sit beside the favorites, in the folder the core finds for the user's own files: the theme,
     // the language picked, the ribbon and where the palettes are.
     let settings = bimcraft_core::favorites::default_path().map(|favorites| bimcraft_ui_egui::settings::beside(&favorites));
-    let language = settings.as_deref().and_then(bimcraft_ui_egui::settings::language_in).unwrap_or_else(lang::from_env);
+    let language = settings.as_deref().and_then(bimcraft_ui_egui::settings::language_in).unwrap_or(lang::Lang::Portuguese);
     // The window starts at the size it was left at; if that is too big for the screen the window brings itself within it (`window.rs`).
     let window = settings.as_deref().and_then(bimcraft_ui_egui::settings::window_in).unwrap_or_default();
     let taken = control_port(std::env::args().skip(1).collect()).and_then(|(args, control)| {
@@ -212,7 +212,7 @@ fn main() -> ExitCode {
     // keeps its own.
     app.own_title_bar = !cfg!(target_os = "macos");
     let mut viewport = eframe::egui::ViewportBuilder::default()
-        .with_title("BIMCraft")
+        .with_title("WMK BIM Studio")
         .with_decorations(!app.own_title_bar || app.system_title_bar)
         .with_app_id(APP_ID)
         .with_inner_size(window.size.unwrap_or([1440.0, 900.0]))

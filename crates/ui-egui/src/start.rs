@@ -24,7 +24,7 @@ use crate::style::{self, pal};
 use crate::{BimApp, Pending};
 
 /// Where the source code is.
-pub const SOURCE: &str = "https://github.com/IPedrax/BIMCraft";
+pub const SOURCE: &str = "https://github.com/WalneyNF/WMK-BIM-STUDIO";
 /// A tile's picture, px (drawn at twice that, for sharp screens).
 const THUMB: [u32; 2] = [232, 136];
 /// A project file bigger than this gets no picture: drawing one would hold the thread too long.
@@ -301,8 +301,9 @@ impl BimApp {
             ui.add_space(14.0);
             ui.vertical(|ui| {
                 ui.add_space(4.0);
-                ui.label(RichText::new("BIMCraft").font(FontId::proportional(34.0)).strong().color(pal().text));
-                ui.label(RichText::new(t("Building information modelling, open and free.")).size(15.0).color(pal().muted));
+                ui.label(RichText::new("WMK BIM Studio").font(FontId::proportional(34.0)).strong().color(pal().text));
+                ui.label(RichText::new("Arquitetura • Engenharia • BIM 2D/3D").size(15.0).color(pal().muted));
+                ui.label(RichText::new("Walney Moreira Klein — walneyk@hotmail.com").size(11.0).color(pal().muted));
             });
         });
     }
@@ -466,6 +467,7 @@ impl BimApp {
             }
             ui.label(RichText::new("·").color(pal().muted));
             ui.label(RichText::new(tf("Version {}", &[env!("CARGO_PKG_VERSION")])).color(pal().muted));
+            ui.label(RichText::new("· WMK — Walney Moreira Klein").color(pal().muted));
             if !self.status.text.is_empty() {
                 ui.label(RichText::new("·").color(pal().muted));
                 let ink = if self.status.error { pal().error } else { pal().muted };
