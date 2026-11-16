@@ -19,6 +19,7 @@ rvt = ["dep:bimcraft-rvt"]
 dwg = ["dep:bimcraft-dwg"]
 
 [dependencies]
+image = { version = "0.25", default-features = false, features = ["webp"] }
 cap = { workspace = true }
 sysinfo = { workspace = true }
 bimcraft-i18n = { workspace = true }

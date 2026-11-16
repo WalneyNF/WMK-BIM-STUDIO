@@ -10,6 +10,7 @@ rust-version.workspace = true
 workspace = true
 
 [dependencies]
+image = { version = "0.25", default-features = false, features = ["webp"] }
 bimcraft-i18n = { workspace = true }
 bimcraft-core = { workspace = true }
 bimcraft-plugin = { workspace = true }
@@ -35,7 +36,7 @@ hidapi = { version = "2.6.7", default-features = false, features = ["windows-nat
 tempfile = { workspace = true }
 # `wgpu` lets a test render the window to a picture (looking at the result); `image` names the picture's type.
 egui_kittest = { workspace = true, features = ["wgpu"] }
-image = { version = "0.25", default-features = false }
+image = { version = "0.25", default-features = false, features = ["webp"] }
 bimcraft-update = { workspace = true, features = ["testing"] }
 bimcraft-assistant = { workspace = true, features = ["testing"] }
 

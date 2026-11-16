@@ -218,9 +218,17 @@ fn main() -> ExitCode {
         .with_inner_size(window.size.unwrap_or([1440.0, 900.0]))
         .with_maximized(window.maximized)
         .with_min_inner_size(bimcraft_ui_egui::window::MIN_SIZE);
-    // The logo, for the title bar and the taskbar.
-    if let Ok(icon) = eframe::icon_data::from_png_bytes(include_bytes!("../../../assets/app-icon/bimcraft-256.png")) {
-        viewport = viewport.with_icon(icon);
+    // O ícone da janela e da barra de tarefas usa a mesma imagem WMK aprovada.
+    if let Ok(decoded) = image::load_from_memory_with_format(
+        include_bytes!("../../../assets/wmk/logo-aprovada.webp"),
+        image::ImageFormat::WebP,
+    ) {
+        let rgba = decoded.to_rgba8();
+        viewport = viewport.with_icon(eframe::egui::IconData {
+            width: rgba.width(),
+            height: rgba.height(),
+            rgba: rgba.into_raw(),
+        });
     }
     let mut options = eframe::NativeOptions { viewport, centered: true, ..Default::default() };
     let mut setup = eframe::egui_wgpu::WgpuSetupCreateNew::without_display_handle();
