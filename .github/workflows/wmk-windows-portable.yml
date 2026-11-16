@@ -1,0 +1,63 @@
+# WMK BIM Studio — build portátil Windows. Acionado por push ou manualmente.
+name: WMK Windows Portable
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/wmk-windows-portable.yml'
+      - 'Cargo.toml'
+      - 'Cargo.lock'
+      - 'apps/**'
+      - 'crates/**'
+      - 'assets/wmk/**'
+
+permissions:
+  contents: read
+
+jobs:
+  portable:
+    name: Compilar WMK BIM Studio (Windows)
+    runs-on: windows-latest
+    timeout-minutes: 120
+    steps:
+      - name: Baixar código
+        uses: actions/checkout@v4
+
+      - name: Preparar Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache do Cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Compilar executáveis
+        shell: pwsh
+        run: |
+          cargo build --release --locked -p bimcraft -p bimcraft-cli
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Montar pacote portátil
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist/WMK-BIM-Studio | Out-Null
+          Copy-Item target/release/bimcraft.exe dist/WMK-BIM-Studio/WMK-BIM-Studio.exe
+          Copy-Item target/release/bimcraft-cli.exe dist/WMK-BIM-Studio/bimcraft-cli.exe
+          Copy-Item LICENSE-MIT,LICENSE-APACHE,NOTICE dist/WMK-BIM-Studio/
+          Copy-Item README.md dist/WMK-BIM-Studio/
+          @'
+          WMK BIM Studio — pacote portátil para Windows
+          Execute WMK-BIM-Studio.exe
+          Teste a casa de exemplo no menu de início.
+          O laboratório JPG/PNG/PDF HTML ainda não está embutido no aplicativo Rust.
+          Personalização WMK: Walney Moreira Klein — walneyk@hotmail.com
+          Base original: IPedrax/BIMCraft (consulte licenças).
+          '@ | Set-Content -Path dist/WMK-BIM-Studio/LEIA-ME.txt -Encoding UTF8
+
+      - name: Publicar ZIP para baixar em Actions
+        uses: actions/upload-artifact@v4
+        with:
+          name: WMK-BIM-Studio-Windows-portatil
+          path: dist/WMK-BIM-Studio/
+          if-no-files-found: error
+          retention-days: 14
