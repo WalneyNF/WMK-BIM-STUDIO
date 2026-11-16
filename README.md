@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/wmk/logo-wmk-bim-studio.svg" alt="WMK BIM Studio — arquitetura, engenharia e modelagem BIM" width="900"></p>
+<p align="center"><img src="assets/wmk/logo-aprovada.webp" alt="Logo original aprovada — WMK BIM Studio" width="220"></p>
 <h1 align="center">WMK BIM Studio</h1>
 <p align="center"><strong>Arquitetura, engenharia e modelagem 2D/3D com automação por agentes</strong></p>
 <p align="center"><img alt="Rust" src="https://img.shields.io/badge/Rust-1.95%2B-0a2436?logo=rust"><img alt="Interface" src="https://img.shields.io/badge/Interface-pt--BR-14809b"><img alt="Licença" src="https://img.shields.io/badge/Licenças-MIT%20%2F%20Apache--2.0-176a8a"><img alt="Estado" src="https://img.shields.io/badge/Estado-em%20desenvolvimento-e39a45"></p>
@@ -32,13 +32,21 @@ cargo run --release -p bimcraft -- --sample
 > O nome do pacote Cargo continua **bimcraft** para manter compatibilidade durante a personalização. O título da janela e a página inicial WMK são adaptações da interface. Compilação em Windows e release público desta personalização ainda devem ser validados.
 
 ## Documentação
-- [Manual de primeiro contato](manuais/primeiro-contato.md)
+- [Biblioteca de manuais HTML](manuais/index.html)
+- [Como usar e instalar](manuais/primeiro-contato.html)
+- [Conceitos de arquitetura para leigos](manuais/arquitetura-basica.html)
+- [Manual avançado e automação](manuais/avancado.html)
+- [Importação de plantas (tutorial)](manuais/importacao-de-plantas.html)
+- [Laboratório HTML: JPG, PNG e PDF](tools/planta-baixa/index.html)
 - [Identidade visual e personalização](manuais/personalizacao.md)
+- [Pesquisa de concorrentes e propostas de melhoria](pesquisa.html)
 - [Roadmap WMK interativo](roadmap.html)
 - [Documentação técnica original (inglês)](README.original.en.md)
 - [Roadmap técnico original](ROADMAP.md)
 
 ## Autoria e licenças
+**Logo:** reprodução reduzida da imagem original aprovada, sem redesenho. A imagem em alta resolução e a capa de Facebook estão no pacote complementar de divulgação.
+
 **Personalização WMK:** **Walney Moreira Klein** — **walneyk@hotmail.com**.
 
 **Base original:** [IPedrax/BIMCraft](https://github.com/IPedrax/BIMCraft). Projeto derivado sob as licenças [MIT](LICENSE-MIT) e [Apache-2.0](LICENSE-APACHE), com componentes e dependências sujeitos a avisos adicionais (ver [NOTICE](NOTICE), leitor RVT e ponte DWG). A autoria da base original não é atribuída à WMK.
