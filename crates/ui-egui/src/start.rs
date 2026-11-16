@@ -634,12 +634,7 @@ fn logo(ui: &Ui, r: Rect) {
         ui.ctx().data_mut(|data| data.insert_temp(key, handle.clone()));
         handle
     };
-    ui.painter().image(
-        handle.id(),
-        r,
-        Rect::from_min_max(Pos2::ZERO, pos2(1.0, 1.0)),
-        Color32::WHITE,
-    );
+    ui.painter().image(handle.id(), r, Rect::from_min_max(Pos2::ZERO, pos2(1.0, 1.0)), Color32::WHITE);
 }
 
 #[cfg(test)]

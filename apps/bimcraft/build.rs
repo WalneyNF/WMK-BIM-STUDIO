@@ -16,8 +16,7 @@ fn main() -> Result<(), String> {
         return Ok(());
     }
     let bytes = fs::read(WMK_LOGO).map_err(|e| format!("{WMK_LOGO}: {e}"))?;
-    let decoded = image::load_from_memory_with_format(&bytes, image::ImageFormat::WebP)
-        .map_err(|e| format!("invalid WMK logo: {e}"))?;
+    let decoded = image::load_from_memory_with_format(&bytes, image::ImageFormat::WebP).map_err(|e| format!("invalid WMK logo: {e}"))?;
     let rgba = decoded.resize_exact(64, 64, image::imageops::FilterType::Lanczos3).to_rgba8();
     let mut cursor = std::io::Cursor::new(Vec::new());
     image::DynamicImage::ImageRgba8(rgba)
