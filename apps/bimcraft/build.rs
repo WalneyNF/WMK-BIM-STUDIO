@@ -4,19 +4,27 @@
 
 use std::{env, fs, path::Path};
 
-const ICO: &str = "../../assets/app-icon/bimcraft.ico";
+const WMK_LOGO: &str = "../../assets/wmk/logo-aprovada.webp";
 const RT_ICON: u16 = 3;
 const RT_GROUP_ICON: u16 = 14;
 
 fn main() -> Result<(), String> {
-    println!("cargo:rerun-if-changed={ICO}");
-    // ponytail: MSVC only, the toolchain the installer is built with. A windows-gnu build would need windres
-    // to turn the .res into an object first.
+    println!("cargo:rerun-if-changed={WMK_LOGO}");
+    // Windows MSVC: ícone da marca WMK aprovado, derivado do mesmo WebP usado na tela inicial.
+    // O nome de crate e os identificadores históricos do pacote são preservados nesta etapa.
     if env::var("CARGO_CFG_TARGET_ENV").as_deref() != Ok("msvc") {
         return Ok(());
     }
-    let ico = fs::read(ICO).map_err(|e| format!("{ICO}: {e}"))?;
-    let res = resource(&ico).ok_or_else(|| format!("{ICO} isn't an icon file"))?;
+    let bytes = fs::read(WMK_LOGO).map_err(|e| format!("{WMK_LOGO}: {e}"))?;
+    let decoded = image::load_from_memory_with_format(&bytes, image::ImageFormat::WebP)
+        .map_err(|e| format!("invalid WMK logo: {e}"))?;
+    let rgba = decoded.resize_exact(64, 64, image::imageops::FilterType::Lanczos3).to_rgba8();
+    let mut cursor = std::io::Cursor::new(Vec::new());
+    image::DynamicImage::ImageRgba8(rgba)
+        .write_to(&mut cursor, image::ImageFormat::Ico)
+        .map_err(|e| format!("could not encode WMK icon: {e}"))?;
+    let ico = cursor.into_inner();
+    let res = resource(&ico).ok_or_else(|| "generated WMK icon isn't a valid ICO".to_string())?;
     let out = Path::new(&env::var("OUT_DIR").map_err(|e| e.to_string())?).join("bimcraft.res");
     fs::write(&out, res).map_err(|e| format!("{}: {e}", out.display()))?;
     println!("cargo:rustc-link-arg-bins={}", out.display());
