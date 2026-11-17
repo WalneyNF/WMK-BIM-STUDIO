@@ -19,12 +19,19 @@
 .mini-readout{grid-column:2;grid-row:3;position:absolute;justify-self:end;align-self:end;bottom:12px;right:12px;z-index:6;font-size:11px}
 header img{flex-shrink:0}header .mark{flex-shrink:0}
 @media(max-width:780px){.viewport-toolbar{padding:6px;gap:5px}.toolbar-help{display:none}.viewport-toolbar input[type=range]{flex-basis:100px}.work{min-height:480px}}
-</style></head><body><header><img src="../../assets/wmk/logo-aprovada.webp" alt="Logo WMK BIM Studio" style="width:76px;height:76px;object-fit:contain;border-radius:12px" onerror="this.style.display='none';document.getElementById('logoFallback').hidden=false"><span id="logoFallback" hidden style="font-size:27px;font-weight:900;color:#51e7f2;border:1px solid #307b96;border-radius:12px;padding:10px">WMK</span><div class="mark">WMK <b>BIM Studio</b></div><div><strong>Importador de plantas baixas</strong><br><small>JPG / PNG / PDF → calibrar escala → traçar paredes → exportar DXF/JSON</small></div></header><main><aside><div style="padding:12px;background:#174058;border:1px solid #338ba0;border-radius:9px;margin-bottom:14px"><strong>Primeira vez aqui?</strong><br><a href="../../manuais/guia-botoes-importador.html" target="_blank" rel="noopener">📖 Manual: o que faz cada botão e o que clicar agora</a><p style="margin:5px 0 0;font-size:12px">Passos: escolher arquivo → calibrar medida → desenhar segmentos → exportar DXF/JSON. Não gera BIM 3D.</p></div><h2>1 — Escolher a planta</h2><input id="file" type="file" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf"><p>PDF: visualize a página desejada (precisa de internet para carregar PDF.js nesta versão).</p><label for="page">Página do PDF</label><input id="page" type="number" min="1" step="1" value="1" disabled><button id="renderPage" disabled>Abrir página</button><h2>2 — Calibrar medidas</h2><label for="meters">Distância real entre dois pontos (m)</label><input id="meters" type="number" value="4" min="0.01" step="0.01"><p>Escolha “Calibrar” e clique no começo e fim de uma medida conhecida da planta.</p><h2>3 — Marcar paredes</h2><div class="toolset"><button id="cal">Calibrar</button><button id="wall" class="active">Linha de parede</button><button id="measure" title="Trena: clique no início e fim de uma distância">📏 Trena virtual</button><button id="brush" title="Pincel livre para marcar sobre o desenho">🖌 Pincel</button><button id="pan">✋ Mover planta</button></div><div class="buttons"><button id="undo">Desfazer parede</button><button id="reset">Limpar paredes</button></div><p><kbd>Esc</kbd> cancela o primeiro ponto. Use a <b>Trena</b> para medir qualquer distância depois de calibrar. O <b>Pincel</b> faz marcações livres; não gera paredes BIM.</p>
+</style></head><body><header><img src="../../assets/wmk/logo-aprovada.webp" alt="Logo WMK BIM Studio" style="width:76px;height:76px;object-fit:contain;border-radius:12px" onerror="this.style.display='none';document.getElementById('logoFallback').hidden=false"><span id="logoFallback" hidden style="font-size:27px;font-weight:900;color:#51e7f2;border:1px solid #307b96;border-radius:12px;padding:10px">WMK</span><div class="mark">WMK <b>BIM Studio</b></div><div><strong>Importador de plantas baixas</strong><br><small>JPG / PNG / PDF → calibrar escala → traçar paredes → exportar DXF/JSON</small></div></header><main><aside><div style="padding:12px;background:#174058;border:1px solid #338ba0;border-radius:9px;margin-bottom:14px"><strong>Primeira vez aqui?</strong><br><a href="../../manuais/guia-botoes-importador.html" target="_blank" rel="noopener">📖 Manual: o que faz cada botão e o que clicar agora</a><p style="margin:5px 0 0;font-size:12px">Passos: escolher arquivo → calibrar medida → desenhar segmentos → exportar DXF/JSON. Não gera BIM 3D.</p></div><h2>1 — Escolher a planta</h2><input id="file" type="file" accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf"><p>PDF: visualize a página desejada (precisa de internet para carregar PDF.js nesta versão).</p><label for="page">Página do PDF</label><input id="page" type="number" min="1" step="1" value="1" disabled><button id="renderPage" disabled>Abrir página</button><h2>2 — Reconhecer paredes automaticamente</h2>
+<p>Para a planta que tem paredes laranja, clique em <b>Detectar paredes</b>. O sistema procura faixas longas da cor escolhida, sem exigir pintura ou calibração manual. É um reconhecimento geométrico experimental, não uma IA treinada.</p>
+<label for="detectColor">Cor das paredes no desenho</label><input id="detectColor" type="color" value="#ed821b">
+<label for="detectTolerance">Tolerância de cor: <output id="detectToleranceValue">65</output></label><input id="detectTolerance" type="range" min="15" max="130" step="5" value="65">
+<div class="buttons"><button id="detectWalls" type="button">✨ Detectar paredes</button><button id="acceptWalls" type="button" disabled>✓ Usar sugestões</button><button id="discardWalls" type="button" disabled>Descartar</button></div>
+<p class="hint">As sugestões aparecem em <b>verde</b>. Confira antes de aceitar; móveis, pisos e bordas coloridas podem gerar falsos positivos. Para plantas monocromáticas, será preciso um reconhecedor próprio.</p>
+<div id="detectionResult" class="hint" role="status">Nenhuma análise realizada.</div>
+<h2>3 — Medidas e escala (para conferir comprimentos)</h2><label for="meters">Distância real entre dois pontos (m)</label><input id="meters" type="number" value="4" min="0.01" step="0.01"><p>Escolha “Calibrar” e clique no começo e fim de uma medida conhecida da planta.</p><h2>4 — Corrigir paredes e marcar detalhes</h2><div class="toolset"><button id="cal">Calibrar</button><button id="wall" class="active">Linha de parede</button><button id="measure" title="Trena: clique no início e fim de uma distância">📏 Trena virtual</button><button id="brush" title="Pincel livre para marcar sobre o desenho">🖌 Pincel</button><button id="pan">✋ Mover planta</button></div><div class="buttons"><button id="undo">Desfazer parede</button><button id="reset">Limpar paredes</button></div><p><kbd>Esc</kbd> cancela o primeiro ponto. Use a <b>Trena</b> para medir qualquer distância depois de calibrar. O <b>Pincel</b> faz marcações livres; não gera paredes BIM.</p>
 <h2>Ferramentas de medição</h2><label><input id="showRulers" type="checkbox" checked> Mostrar réguas nas bordas (metros)</label><p class="hint">A régua aparece em metros após calibrar. Antes, a referência é em pixels. Use a trena entre dois pontos para obter um comprimento.</p>
 <label for="refOpacity">Opacidade da imagem: <output id="refOpacityValue">100%</output></label><input id="refOpacity" type="range" min="5" max="100" value="100" step="5">
 <label for="inkColor">Cor para linhas e pincel</label><input id="inkColor" type="color" value="#ec304d">
 <label for="brushWidth">Grossura do pincel: <output id="brushWidthValue">8 px</output></label><input id="brushWidth" type="range" min="1" max="40" value="8">
-<div class="buttons"><button id="clearInk">Limpar pincel</button><button id="clearMeasures">Limpar trena</button></div><h2>4 — Precisão do traçado</h2><label><input id="showLengths" type="checkbox" checked> Mostrar medidas dos segmentos (após calibrar)</label><label><input id="snapPoints" type="checkbox" checked> Conectar em extremos próximos (snap)</label><h2>5 — Exportar</h2><button id="exportDxf">Exportar DXF</button><button id="exportJson">Exportar JSON</button><p>O DXF pode ser importado no BIMCraft como desenho CAD. <strong>As linhas não viram paredes BIM automaticamente.</strong></p><div id="status" role="status">Abra uma imagem ou PDF para começar.</div><p><small>Arquivos são processados localmente no navegador. O PDF.js é carregado de um CDN externo, mas o arquivo não é enviado a ele por este código.</small></p></aside><section class="work"><div class="viewport-toolbar" role="toolbar" aria-label="Controles de visualização">
+<div class="buttons"><button id="clearInk">Limpar pincel</button><button id="clearMeasures">Limpar trena</button></div><h2>5 — Precisão do traçado</h2><label><input id="showLengths" type="checkbox" checked> Mostrar medidas dos segmentos (após calibrar)</label><label><input id="snapPoints" type="checkbox" checked> Conectar em extremos próximos (snap)</label><h2>6 — Exportar</h2><button id="exportDxf">Exportar DXF</button><button id="exportJson">Exportar JSON</button><p>O DXF pode ser importado no BIMCraft como desenho CAD. <strong>As linhas não viram paredes BIM automaticamente.</strong></p><div id="status" role="status">Abra uma imagem ou PDF para começar.</div><p><small>Arquivos são processados localmente no navegador. O PDF.js é carregado de um CDN externo, mas o arquivo não é enviado a ele por este código.</small></p></aside><section class="work"><div class="viewport-toolbar" role="toolbar" aria-label="Controles de visualização">
   <span class="toolbar-title">VISUALIZAÇÃO</span>
   <button id="zoomOut" type="button" title="Diminuir ampliação">−</button>
   <button id="zoomIn" type="button" title="Aumentar ampliação">+</button>
@@ -36,7 +43,7 @@ header img{flex-shrink:0}header .mark{flex-shrink:0}
   <span class="toolbar-help" title="Botão do meio: arrastar. Também espaço + botão esquerdo.">✋ Meio do mouse ou Espaço + arrastar</span>
 </div><div class="ruler-corner" id="rulerCorner" aria-hidden="true"></div><canvas id="rulerTop" class="ruler ruler-top" aria-hidden="true"></canvas><canvas id="rulerLeft" class="ruler ruler-left" aria-hidden="true"></canvas><div id="cursorReadout" class="mini-readout">Passe o mouse sobre a planta</div><div class="board" id="board" tabindex="0" aria-label="Área de planta com barras de rolagem horizontal e vertical"><canvas id="canvas" width="1200" height="800" aria-label="Visualizador de planta baixa"></canvas></div></section></main><footer>WMK BIM Studio — Walney Moreira Klein · walneyk@hotmail.com · Protótipo de traçado manual, não reconhecimento automático.</footer>
 <script>
-(()=>{'use strict';const $=x=>document.getElementById(x),canvas=$('canvas'),ctx=canvas.getContext('2d');let picture=null,mode='wall',first=null,calPoints=[],pxPerMeter=null,lines=[],source='',drag=null,pdfDoc=null,pdfjs=null,zoom=1,measurements=[],strokes=[],activeStroke=null,referenceOpacity=1;const board=$('board');const msg=s=>$('status').textContent=s;const rulers=[$('rulerTop'),$('rulerLeft')];let hovered=null,spaceHeld=false,panDrag=null;
+(()=>{'use strict';const $=x=>document.getElementById(x),canvas=$('canvas'),ctx=canvas.getContext('2d');let picture=null,mode='wall',first=null,calPoints=[],pxPerMeter=null,lines=[],source='',drag=null,pdfDoc=null,pdfjs=null,zoom=1,measurements=[],strokes=[],activeStroke=null,referenceOpacity=1;const board=$('board');const msg=s=>$('status').textContent=s;const rulers=[$('rulerTop'),$('rulerLeft')];let hovered=null,spaceHeld=false,panDrag=null,suggestedWalls=[];
 function select(s){mode=s;first=null;calPoints=[];['cal','wall','measure','brush','pan'].forEach(id=>$(id).classList.toggle('active',id===s));draw()}
 function measureLength(a,b){return Math.hypot(b.x-a.x,b.y-a.y)/(pxPerMeter||1)}
 function labelAt(text,x,y,color='#082038'){ctx.save();ctx.font='bold 13px system-ui';const w=ctx.measureText(text).width+12;ctx.fillStyle=color;ctx.fillRect(x-w/2,y-20,w,20);ctx.fillStyle='#fff';ctx.fillText(text,x-w/2+6,y-5);ctx.restore()}
@@ -45,6 +52,7 @@ function draw(){
   if(picture){ctx.save();ctx.globalAlpha=referenceOpacity;ctx.drawImage(picture,0,0);ctx.restore()}
   ctx.lineCap='round';
   for(const stroke of [...strokes,...(activeStroke?[activeStroke]:[])]){if(stroke.points.length<1)continue;ctx.beginPath();ctx.moveTo(stroke.points[0].x,stroke.points[0].y);for(const pt of stroke.points.slice(1))ctx.lineTo(pt.x,pt.y);ctx.strokeStyle=stroke.color;ctx.lineWidth=stroke.width;ctx.lineJoin='round';ctx.stroke()}
+  for(const l of suggestedWalls){ctx.beginPath();ctx.moveTo(l.a.x,l.a.y);ctx.lineTo(l.b.x,l.b.y);ctx.lineWidth=Math.max(3,4/zoom);ctx.strokeStyle='#10d6a1';ctx.setLineDash([10/zoom,5/zoom]);ctx.stroke();ctx.setLineDash([])}
   for(const l of lines){ctx.beginPath();ctx.moveTo(l.a.x,l.a.y);ctx.lineTo(l.b.x,l.b.y);ctx.strokeStyle=l.color||'#ed3b4f';ctx.lineWidth=Math.max(2,2/zoom);ctx.stroke();
   if($('showLengths').checked&&pxPerMeter)labelAt(measureLength(l.a,l.b).toFixed(2)+' m',(l.a.x+l.b.x)/2,(l.a.y+l.b.y)/2)}
   for(const m of measurements){ctx.beginPath();ctx.moveTo(m.a.x,m.a.y);ctx.lineTo(m.b.x,m.b.y);ctx.strokeStyle='#1989f1';ctx.lineWidth=Math.max(2,2/zoom);ctx.setLineDash([8/zoom,5/zoom]);ctx.stroke();ctx.setLineDash([]);labelAt(measureLength(m.a,m.b).toFixed(2)+(pxPerMeter?' m':' px'),(m.a.x+m.b.x)/2,(m.a.y+m.b.y)/2,'#17598c')}
@@ -78,13 +86,99 @@ $('clearMeasures').onclick=()=>{measurements=[];draw()};
 board.addEventListener('scroll',updateRulers);
 window.addEventListener('resize',updateRulers);
 
+// Analisador geométrico offline de cor: sugere eixos de faixas horizontais/verticais.
+// Não é um modelo de IA, nem interpreta símbolos de portas/janelas.
+function findColorWalls(){
+  if(!picture)throw Error('Escolha uma imagem primeiro.');
+  const w=picture.width,h=picture.height;
+  const pixels=picture.getContext('2d',{willReadFrequently:true}).getImageData(0,0,w,h).data;
+  const color=$('detectColor').value;const rgb=[1,3,5].map(i=>parseInt(color.slice(i,i+2),16));
+  const tol=Number($('detectTolerance').value);
+  const mask=new Uint8Array(w*h);
+  let matched=0;
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+    const idx=(y*w+x)*4,r=pixels[idx],g=pixels[idx+1],b=pixels[idx+2];
+    // Distância de cor com exigência de saturação suficiente, evita detectar áreas brancas/bege.
+    const dist=Math.hypot((r-rgb[0])*.9,(g-rgb[1])*1.05,(b-rgb[2])*1.05);
+    if(dist<tol && Math.max(r,g,b)-Math.min(r,g,b)>45){mask[y*w+x]=1;matched++}
+  }
+  if(matched<60)throw Error('Não encontrei faixas suficientes desta cor. Experimente escolher uma amostra de parede ou ampliar a tolerância.');
+  // A parede fica grossa em vários pixels: agrupar varreduras semelhantes e desenhar eixo do grupo.
+  function scan(horizontal){
+    const primary=horizontal?h:w, secondary=horizontal?w:h;
+    const groups=[],minLength=Math.max(24,Math.round(secondary*.035));
+    for(let v=0;v<primary;v++){
+      const intervals=[];
+      let start=-1,miss=0;
+      for(let u=0;u<=secondary;u++){
+        const on=u<secondary && (horizontal?mask[v*w+u]:mask[u*w+v]);
+        if(on){if(start<0)start=u;miss=0}
+        else if(start>=0){miss++;if(miss>3||u===secondary){
+          const end=u-miss+1;
+          if(end-start>=minLength)intervals.push([start,end]);
+          start=-1;miss=0;
+        }}
+      }
+      for(const [a,b] of intervals){
+        let group=groups.find(g=>g.last===v-1&&Math.abs(g.a-a)<11&&Math.abs(g.b-b)<11);
+        if(group){group.last=v;group.a=Math.round((group.a*group.n+a)/(group.n+1));group.b=Math.round((group.b*group.n+b)/(group.n+1));group.n++}
+        else groups.push({first:v,last:v,a,b,n:1})
+      }
+    }
+    const result=[];
+    for(const g of groups){
+      const thickness=g.last-g.first+1;
+      if(g.n<2||thickness>40)continue;
+      const pos=(g.first+g.last)/2;
+      const a=horizontal?{x:g.a,y:pos}:{x:pos,y:g.a};
+      const b=horizontal?{x:g.b,y:pos}:{x:pos,y:g.b};
+      result.push({a,b,color:'#10d6a1'});
+    }
+    return result
+  }
+  const all=[...scan(true),...scan(false)].sort((a,b)=>Math.hypot(b.b.x-b.a.x,b.b.y-b.a.y)-Math.hypot(a.b.x-a.a.x,a.b.y-a.a.y));
+  // Ignora colagens exatas e evita encher a tela com paredes quase iguais.
+  const unique=[];
+  for(const line of all){
+    const mid={x:(line.a.x+line.b.x)/2,y:(line.a.y+line.b.y)/2};
+    if(!unique.some(k=>{
+      const km={x:(k.a.x+k.b.x)/2,y:(k.a.y+k.b.y)/2};
+      return Math.hypot(mid.x-km.x,mid.y-km.y)<8&&Math.abs(Math.hypot(line.a.x-line.b.x,line.a.y-line.b.y)-Math.hypot(k.a.x-k.b.x,k.a.y-k.b.y))<16;
+    }))unique.push(line);
+    if(unique.length>=180)break;
+  }
+  return {lines:unique,matched}
+}
+$('detectTolerance').oninput=e=>$('detectToleranceValue').textContent=e.target.value;
+$('detectWalls').onclick=()=>{
+  try{
+    const found=findColorWalls();
+    suggestedWalls=found.lines;
+    $('acceptWalls').disabled=!suggestedWalls.length;$('discardWalls').disabled=!suggestedWalls.length;
+    $('detectionResult').textContent=suggestedWalls.length?
+      'Sugestões encontradas: '+suggestedWalls.length+'. Estão em verde sobre a planta. Confira e clique Usar sugestões. Não são paredes BIM prontas.':
+      'Não encontrei segmentos longos nessa cor. Experimente outra cor/tolerância.';
+    msg('Detecção local concluída: '+suggestedWalls.length+' segmentos candidatos. Nenhuma parede foi alterada.');
+    draw();
+  }catch(e){$('detectionResult').textContent=e.message;msg('Detecção não concluída: '+e.message)}
+};
+$('acceptWalls').onclick=()=>{
+  if(!suggestedWalls.length)return;
+  if(lines.length&&!confirm('Adicionar '+suggestedWalls.length+' sugestões às '+lines.length+' linhas já existentes?'))return;
+  lines.push(...suggestedWalls.map(l=>({a:l.a,b:l.b,color:'#10d6a1'})));
+  suggestedWalls=[];$('acceptWalls').disabled=true;$('discardWalls').disabled=true;
+  msg('Sugestões adicionadas ao traçado. Revise os segmentos. Para exportar em metros, confirme uma cota conhecida.');
+  $('detectionResult').textContent='Sugestões incluídas: '+lines.length+' linhas totais.';draw()
+};
+$('discardWalls').onclick=()=>{suggestedWalls=[];$('acceptWalls').disabled=true;$('discardWalls').disabled=true;$('detectionResult').textContent='Sugestões descartadas.';draw()};
+
 function limitZoom(v){return Math.min(5,Math.max(.1,v))}
 function updateZoom(next,anchor){if(!picture)return;const before=zoom;next=limitZoom(next);if(Math.abs(before-next)<.0001)return;const left=board.scrollLeft,top=board.scrollTop;const ax=anchor?.x??board.clientWidth/2,ay=anchor?.y??board.clientHeight/2;const px=(left+ax)/before,py=(top+ay)/before;zoom=next;canvas.style.width=(canvas.width*zoom)+'px';canvas.style.height=(canvas.height*zoom)+'px';board.scrollLeft=px*zoom-ax;board.scrollTop=py*zoom-ay;$('zoomRange').value=String(Math.round(zoom*100/5)*5);$('zoomLabel').textContent=Math.round(zoom*100)+'%';draw()}
 function fitZoom(){if(!picture)return;updateZoom(Math.min(board.clientWidth/canvas.width,board.clientHeight/canvas.height),{x:0,y:0});board.scrollLeft=0;board.scrollTop=0}
 $('zoomIn').onclick=()=>updateZoom(zoom*1.25);$('zoomOut').onclick=()=>updateZoom(zoom/1.25);$('zoom100').onclick=()=>updateZoom(1);$('zoomFit').onclick=fitZoom;$('zoomRange').oninput=e=>updateZoom(Number(e.target.value)/100);
 board.addEventListener('wheel',e=>{if(!picture)return;e.preventDefault();const b=board.getBoundingClientRect();updateZoom(zoom*(e.deltaY<0?1.12:1/1.12),{x:e.clientX-b.left,y:e.clientY-b.top})},{passive:false});
 $('showLengths').onchange=draw;$('snapPoints').onchange=draw;
-function putImage(img){let ratio=Math.min(1,2600/Math.max(img.width,img.height));canvas.width=Math.max(1,Math.round(img.width*ratio));canvas.height=Math.max(1,Math.round(img.height*ratio));let c=document.createElement('canvas');c.width=canvas.width;c.height=canvas.height;c.getContext('2d').drawImage(img,0,0,c.width,c.height);picture=c;lines=[];pxPerMeter=null;first=null;zoom=1;canvas.style.width=canvas.width+'px';canvas.style.height=canvas.height+'px';board.scrollTop=0;board.scrollLeft=0;requestAnimationFrame(fitZoom);measurements=[];strokes=[];activeStroke=null;draw();msg('Planta carregada. Calibre uma cota conhecida, depois use a trena, as réguas e o pincel.');}
+function putImage(img){let ratio=Math.min(1,2600/Math.max(img.width,img.height));canvas.width=Math.max(1,Math.round(img.width*ratio));canvas.height=Math.max(1,Math.round(img.height*ratio));let c=document.createElement('canvas');c.width=canvas.width;c.height=canvas.height;c.getContext('2d').drawImage(img,0,0,c.width,c.height);picture=c;lines=[];suggestedWalls=[];$('acceptWalls').disabled=true;$('discardWalls').disabled=true;$('detectionResult').textContent='Imagem alterada. Execute a detecção novamente.';pxPerMeter=null;first=null;zoom=1;canvas.style.width=canvas.width+'px';canvas.style.height=canvas.height+'px';board.scrollTop=0;board.scrollLeft=0;requestAnimationFrame(fitZoom);measurements=[];strokes=[];activeStroke=null;draw();msg('Planta carregada. Calibre uma cota conhecida, depois use a trena, as réguas e o pincel.');}
 async function loadPdf(){if(pdfjs)return pdfjs;await new Promise((resolve,reject)=>{let script=document.createElement('script');script.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';script.onload=resolve;script.onerror=()=>reject(Error('Biblioteca de PDF indisponível. Verifique a internet.'));document.head.append(script)});pdfjs=window.pdfjsLib;if(!pdfjs)throw Error('PDF.js não iniciou');pdfjs.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';return pdfjs}
 async function renderPage(){const n=+$('page').value;if(!Number.isInteger(n)||n<1||n>pdfDoc.numPages)throw Error('Página inválida');const p=await pdfDoc.getPage(n);const v=p.getViewport({scale:1.6});const temp=document.createElement('canvas');temp.width=Math.round(v.width);temp.height=Math.round(v.height);await p.render({canvasContext:temp.getContext('2d'),viewport:v}).promise;putImage(temp);msg('PDF página '+n+' de '+pdfDoc.numPages+' aberta. Calibre a escala.');}
 $('file').addEventListener('change',async e=>{let f=e.target.files?.[0];if(!f)return;source=f.name;try{if(f.type==='application/pdf'||/\.pdf$/i.test(f.name)){const api=await loadPdf();pdfDoc=await api.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise;$('page').max=pdfDoc.numPages;$('page').value=1;$('page').disabled=false;$('renderPage').disabled=false;await renderPage()}else if(f.type==='image/png'||f.type==='image/jpeg'){pdfDoc=null;$('page').disabled=true;$('renderPage').disabled=true;const img=await createImageBitmap(f);putImage(img);img.close()}else throw Error('Formato não reconhecido');}catch(err){msg('Erro ao abrir arquivo: '+err.message)}});
