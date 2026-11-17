@@ -60,6 +60,7 @@ mod opening;
 mod orbit;
 mod panelsched;
 mod paper;
+mod plant_import;
 mod parameters;
 mod phasing;
 mod plugins;
@@ -781,6 +782,8 @@ pub struct BimApp {
     cad_dialog: Option<bool>,
     /// Bringing a CAD drawing in: the box, while it's open.
     cad_box: Option<cad::CadBox>,
+    /// WMK: planta raster de estudo, mostrada num painel nativo; não é parte do arquivo BIM.
+    plant_import: plant_import::PlantImport,
     /// Link Model's box (its positioning), while it's open.
     pub(crate) link_box: Option<links::LinkBox>,
     /// A selected element's temporary dimension being typed: the element, which of its dimensions (a wall has one, a
@@ -1602,6 +1605,7 @@ impl BimApp {
             cloud_box: None,
             cad_dialog: None,
             cad_box: None,
+            plant_import: plant_import::PlantImport::default(),
             link_box: None,
             tab_cycle: false,
             held: Vec::new(),
@@ -4895,6 +4899,9 @@ impl BimApp {
             if big_button(ui, Icon::ImportCad, "Import CAD", self.cad_box.as_ref().is_some_and(|b| !b.linked()), tip).clicked() {
                 self.cad_dialog = Some(false);
             }
+            if ui.button("WMK • Importar planta JPG/PNG").on_hover_text("Visualizar, calibrar e traçar uma planta no aplicativo. PDF e conversão automática para BIM ainda pendentes.").clicked() {
+                self.import_plant_dialog(ui.ctx());
+            }
             let tip = msg!(
                 "Import 3D Model: an OBJ or glTF file's objects brought into the project as Generic Model families, each placed where the file has it on this plan's level, with its materials' colours"
             );
@@ -6350,6 +6357,7 @@ impl BimApp {
             self.import_cad_dialog(ctx, link);
         }
         self.import_cad_window(ctx);
+        self.plant_import_window(ctx);
         self.link_window(ctx);
         self.select_by_id_window(ctx);
         self.run_script_window(ctx);
