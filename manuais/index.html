@@ -1,1 +1,110 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Biblioteca de manuais | WMK BIM Studio</title><link rel="stylesheet" href="estilo.css"></head><body><header><img src="../assets/wmk/logo-aprovada.webp" alt="Logo original WMK BIM Studio"><div><strong>WMK BIM Studio</strong><div class="muted">Documentação em português • da iniciação ao nível avançado</div></div><nav><a href="../README.md">README</a><a href=" index.html" style="display:none"> </a><a href="../manuais/index.html">Manuais</a><a href="../pesquisa.html">Pesquisa</a><a href="../roadmap.html">Roadmap</a><a href="../tools/planta-baixa/index.html">Laboratório de plantas</a></nav></header><main><div class="hero"><span class="tag">WMK • documentação 2026</span><h1>Biblioteca de manuais</h1><p>Uma trilha de aprendizagem do primeiro clique à interoperabilidade BIM.</p></div><div class="card"><span class="tag">Estudo de caso</span><h2>Uma casa com piscina: explicação de cada ambiente</h2><p>Aprenda a identificar dormitórios, banheiro, lavabo, living, cozinha, churrasqueira, deck, piscina e projeção de beiral numa planta humanizada real de referência.</p><a href="estudo-planta-com-piscina.html">Estudar planta de referência</a></div><div class="card"><span class="tag">Novo • Para quem nunca estudou arquitetura</span><h2>Minicurso de plantas baixas: da ideia à casa</h2><p>Aprenda desde o zero com uma planta interativa clicável, explicações de cada cômodo, símbolos, medidas, etapas depois da planta, exercícios e fontes para continuar estudando.</p><a href="minicurso-planta-baixa.html">Iniciar minicurso gratuito</a></div><div class="card"><span class="tag">Comece aqui</span><h2>Manual geral completo do WMK BIM Studio</h2><p>Visão geral, módulos do projeto, modelagem e documentação BIM, instalação, IA, CLI/MCP, mudanças WMK e roadmap explicado.</p><a href="manual-completo.html">Abrir manual completo</a></div><div class="grid"><div class="card"><span class="tag">Iniciante</span><h2>Entenda arquitetura e BIM</h2><p>Planta, escala, elementos, cortes, cotas, níveis e diferenças entre CAD e BIM.</p><a href="arquitetura-basica.html">Estudar fundamentos</a></div><div class="card"><span class="tag">Prático</span><h2>Primeiro contato com o programa</h2><p>Instalação, projeto de exemplo, navegação, edição, salvamento e exportação.</p><a href="primeiro-contato.html">Abrir guia de uso</a></div><div class="card"><span class="tag">Laboratório</span><h2>Importar plantas JPG/PNG/PDF</h2><p>Calibrar escala, traçar paredes e exportar referências, com limitações explícitas.</p><a href="importacao-de-plantas.html">Abrir manual do importador</a></div><div class="card"><span class="tag">Intermediário/avançado</span><h2>Modelagem, IFC e automação</h2><p>Famílias, tipagem, responsabilidades, CLI, MCP, validação e organização do projeto.</p><a href="avancado.html">Estudar tópicos avançados</a></div></div><h2>Trilha sugerida</h2><ol><li>Aprenda a diferença entre planta 2D, vista e modelo BIM.</li><li>Abra o projeto de exemplo e examine portas, janelas e paredes.</li><li>Importe uma planta de teste no laboratório e calibre uma distância.</li><li>Exporte o DXF de referência e abra-o no programa desktop.</li><li>Depois estude IFC, famílias e agentes de automação.</li></ol><p class="warn"><b>Estado técnico:</b> o importador de imagem fornecido aqui é um laboratório HTML independente. Ainda não gera paredes BIM automaticamente nem está incorporado às janelas Rust.</p></main><footer>Personalização e documentação WMK: <strong>Walney Moreira Klein</strong> — walneyk@hotmail.com.<br>Base técnica: <a href="https://github.com/IPedrax/BIMCraft">BIMCraft — IPedrax</a>. Licenças originais preservadas. Desenhos e cálculos de engenharia devem ser verificados por profissionais habilitados.</footer></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Biblioteca WMK BIM Studio: minicursos, manuais, estudos de plantas baixas e guias de modelagem BIM em português.">
+<title>Biblioteca de Aprendizagem | WMK BIM Studio</title>
+<link rel="stylesheet" href="estilo.css">
+<style>
+/* Estilo da página incorporado para funcionar mesmo ao baixar index.html isoladamente. */
+:root{color-scheme:dark;--bg:#07111f;--surface:#0f2237;--surface2:#122a43;--stroke:#28475e;--cyan:#20d7e8;--txt:#ebf5ff;--muted:#a8bfd1;--silver:#c9d9eb}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at 85% -10%,#123950 0,transparent 50%),var(--bg);font:16px/1.6 system-ui,'Segoe UI',Arial,sans-serif;color:var(--txt)}
+a{color:#67edfa}
+a:focus-visible,button:focus-visible{outline:3px solid #73f6ff;outline-offset:3px}
+.page-head{background:#081928e8;border-bottom:1px solid var(--stroke);padding:14px max(18px,calc((100vw - 1180px)/2));display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--txt)}
+.brand img{width:76px;height:76px;object-fit:contain;border-radius:12px;flex:none}
+.brand strong{font-size:18px;line-height:1.2;display:block}
+.brand small{color:var(--muted);font-size:12px;display:block}
+.page-nav{margin-left:auto;display:flex;flex-wrap:wrap;gap:8px}
+.page-nav a{font-size:13px;text-decoration:none;color:#d7eef8;padding:8px 12px;border:1px solid var(--stroke);border-radius:10px;background:#102539}
+.page-nav a:hover{background:#164461;border-color:#2aa5b9}
+.wrap{max-width:1180px;margin:auto;padding:28px 22px 72px}
+.hero{padding:32px;position:relative;overflow:hidden;border:1px solid #235d72;border-radius:20px;background:linear-gradient(120deg,#10263d 5%,#0b243a 60%,#0e4d5d 150%);box-shadow:0 16px 60px #0003}
+.hero:after{content:"";width:280px;height:280px;position:absolute;right:-110px;top:-120px;border:30px solid #1dddec18;border-radius:50%;pointer-events:none}
+.eyebrow{display:inline-block;border:1px solid #308e99;border-radius:20px;padding:4px 12px;color:#8cf3f5;letter-spacing:.08em;font-size:12px;font-weight:700}
+.hero h1{font-size:clamp(30px,5vw,50px);line-height:1.12;margin:16px 0;color:white;max-width:750px;border:0}
+.hero p{max-width:760px;color:#c5dceb;font-size:17px;margin:0 0 18px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.action{display:inline-block;text-decoration:none;background:#20cddd;color:#092133!important;font-weight:800;border:1px solid #59e6e7;border-radius:10px;padding:11px 17px}
+.action:hover{background:#8af5f6}
+.action.secondary{color:#dcf5ff!important;background:#1c3548;border-color:#3c7f8b}
+.section-top{display:flex;align-items:end;justify-content:space-between;gap:18px;margin:36px 0 14px}
+.section-top h2{font-size:24px;color:white;margin:0;border:0;padding:0}
+.section-top p{color:var(--muted);margin:0;font-size:14px}
+.course-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.course{display:flex;flex-direction:column;min-width:0;background:linear-gradient(155deg,var(--surface2),var(--surface));border:1px solid var(--stroke);border-radius:16px;padding:20px;transition:transform .16s,border-color .16s}
+.course:hover{border-color:#28afc6;transform:translateY(-3px)}
+.course .iconbox{width:48px;height:48px;display:grid;place-items:center;border-radius:14px;background:#184f62;color:#9af4ff;font-size:25px}
+.course .meta{margin-top:17px;color:#6ff2ef;font-size:11px;text-transform:uppercase;letter-spacing:.09em;font-weight:800}
+.course h3{font-size:19px;margin:8px 0;color:white;line-height:1.28}
+.course p{font-size:14px;color:#b5c9d9;margin:0 0 18px;flex:1}
+.course a{display:inline-flex;gap:6px;font-weight:700;text-decoration:none;align-self:flex-start;align-items:center;border-bottom:1px solid #4baabb;padding-bottom:3px}
+.course a:hover{color:white}
+.course.featured{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:18px;background:linear-gradient(125deg,#12364b,#113f53)}
+.course.featured .illustration{display:flex;justify-content:center;align-items:center;min-width:0}
+.course.featured svg{max-width:100%;width:320px;height:auto}
+.course.featured .meta{margin-top:3px}
+.course.featured p{margin-bottom:18px}
+.panel{background:#0e2539;border:1px solid var(--stroke);border-radius:15px;padding:22px}
+.timeline{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;list-style:none;padding:0;margin:0}
+.timeline li{background:#132f44;border:1px solid #285670;border-radius:11px;padding:15px;position:relative;font-size:13px;color:#c8dce9}
+.timeline b{display:block;color:#97f4f4;font-size:17px;margin-bottom:8px}
+.caution{border-left:4px solid #e3b56b;background:#302b25;padding:16px 20px;border-radius:8px;color:#f7e5cb;margin-top:23px}
+.footer{border-top:1px solid var(--stroke);padding:22px max(18px,calc((100vw - 1180px)/2));color:#acc5d5;background:#081928;font-size:13px}
+.footer a{color:#67e3f2}
+@media(max-width:950px){.course-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.timeline{grid-template-columns:repeat(3,minmax(0,1fr))}.page-nav{margin-left:0}}
+@media(max-width:640px){.wrap{padding:18px 14px 50px}.page-head{padding:12px 14px}.hero{padding:22px}.course-grid{grid-template-columns:1fr}.course.featured{grid-column:span 1;grid-template-columns:1fr}.course.featured .illustration{display:none}.timeline{grid-template-columns:1fr}.section-top{display:block}.page-nav{width:100%}.page-nav a{flex:1;text-align:center}}
+@media print{body{color:#000;background:white}.hero,.course,.panel{background:white;color:#000;border-color:#aaa}.hero h1,.section-top h2,.course h3{color:#000}.course p,.hero p{color:#333}.page-nav{display:none}}
+</style></head>
+<body>
+<header class="page-head">
+<a class="brand" href="index.html"><img src="../assets/wmk/logo-aprovada.webp" alt="Logo original WMK BIM Studio"><span><strong>WMK BIM Studio</strong><small>Central de aprendizagem em português</small></span></a>
+<nav class="page-nav" aria-label="Navegação principal">
+<a href="index.html" aria-current="page">Manuais</a>
+<a href="../pesquisas.html">Pesquisas</a>
+<a href="../roadmap.html">Roadmap</a>
+<a href="../tools/planta-baixa/index.html">Importador</a>
+<a href="https://github.com/WalneyNF/WMK-BIM-STUDIO">Repositório</a>
+</nav>
+</header>
+<main class="wrap">
+<section class="hero">
+<span class="eyebrow">ESCOLA WMK • APRENDA DO ZERO</span>
+<h1>Arquitetura, plantas baixas e modelagem BIM</h1>
+<p>Aprenda a interpretar uma planta, entender cada cômodo, trabalhar com arquivos de projeto e explorar o WMK BIM Studio. Materiais organizados de iniciantes até desenvolvedores.</p>
+<div class="hero-actions"><a class="action" href="minicurso-planta-baixa.html">Começar pelo minicurso</a><a class="action secondary" href="manual-completo.html">Conhecer o programa</a></div>
+</section>
+<div class="section-top"><h2>Comece por aqui</h2><p>Para quem nunca estudou arquitetura</p></div>
+<div class="course-grid">
+<article class="course featured">
+<div><div class="iconbox" aria-hidden="true">⌂</div><div class="meta">Curso em destaque • iniciante</div>
+<h3>Da planta baixa à casa</h3><p>O que são paredes, portas, janelas e cotas? Como uma planta vira um modelo 3D? Oito aulas com exemplo interativo, exercícios e glossário.</p>
+<a href="minicurso-planta-baixa.html">Iniciar curso <span aria-hidden="true">→</span></a></div>
+<div class="illustration" aria-hidden="true"><svg viewBox="0 0 340 235" xmlns="http://www.w3.org/2000/svg"><rect x="30" y="15" width="270" height="192" rx="12" fill="#d9f0f2"/><path d="M48 34H283V188H48Z" fill="#ecf9f9" stroke="#143b51" stroke-width="10" stroke-linejoin="round"/><path d="M158 34V115H283M48 115H111M158 115H210M210 115V188" fill="none" stroke="#143b51" stroke-width="8"/><path d="M70 34H126M283 137V175" stroke="#25bce1" stroke-width="10"/><path d="M111 115V162M111 162A47 47 0 0 0 158 115" stroke="#e5a449" stroke-width="3" fill="none"/><path d="M200 207H280" stroke="#8cbec9" stroke-width="1.5"/><path d="M200 203V212M280 203V212" stroke="#8cbec9" stroke-width="1.5"/><text x="240" y="224" text-anchor="middle" font-size="10" fill="#a7dde5">PLANTA DIDÁTICA</text></svg></div>
+</article>
+<article class="course"><div class="iconbox" aria-hidden="true">🏡</div><div class="meta">Estudo de caso • iniciante</div><h3>Casa com piscina</h3><p>Entenda dormitórios, living, cozinha, churrasqueira, varanda, deck, piscina e projeção do beiral numa planta humanizada.</p><a href="estudo-planta-com-piscina.html">Abrir estudo <span aria-hidden="true">→</span></a></article>
+<article class="course"><div class="iconbox" aria-hidden="true">📐</div><div class="meta">Fundamentos • iniciante</div><h3>Conceitos de arquitetura</h3><p>Escalas, medidas, áreas, cortes, fachadas, níveis e diferenças entre um desenho CAD e um modelo BIM.</p><a href="arquitetura-basica.html">Estudar fundamentos <span aria-hidden="true">→</span></a></article>
+<article class="course"><div class="iconbox" aria-hidden="true">🖥</div><div class="meta">Prática • primeiros passos</div><h3>Usando o WMK BIM Studio</h3><p>Abra a casa de exemplo, conheça os painéis, navegue pelo projeto e aprenda a salvar suas modificações.</p><a href="primeiro-contato.html">Aprender a usar <span aria-hidden="true">→</span></a></article>
+</div>
+<div class="section-top"><h2>Ferramentas e estudos avançados</h2><p>Para evoluir após os primeiros exercícios</p></div>
+<div class="course-grid">
+<article class="course"><div class="iconbox" aria-hidden="true">🖼</div><div class="meta">Laboratório • JPG/PNG/PDF</div><h3>Importar uma planta</h3><p>Aprenda a calibrar medidas, marcar paredes manualmente e exportar DXF e JSON. Não gera um BIM automático nesta versão.</p><a href="importacao-de-plantas.html">Ler tutorial <span aria-hidden="true">→</span></a></article>
+<article class="course"><div class="iconbox" aria-hidden="true">▣</div><div class="meta">Referência • documentação completa</div><h3>Manual do projeto</h3><p>Conheça o motor, a arquitetura do software, os recursos herdados do BIMCraft e nossas personalizações WMK.</p><a href="manual-completo.html">Abrir manual completo <span aria-hidden="true">→</span></a></article>
+<article class="course"><div class="iconbox" aria-hidden="true">⚙</div><div class="meta">Avançado • BIM e automação</div><h3>IFC, famílias e agentes</h3><p>Estude modelagem paramétrica, compatibilidade, linha de comando, MCP e testes de automação.</p><a href="avancado.html">Estudar nível avançado <span aria-hidden="true">→</span></a></article>
+</div>
+<div class="section-top"><h2>Trilha de aprendizagem sugerida</h2><p>Uma sequência para estudar sem se perder</p></div>
+<ol class="timeline">
+<li><b>01 • Aprender</b>Entenda uma planta e identifique paredes, portas e janelas.</li>
+<li><b>02 • Interpretar</b>Leia cotas, escalas, área e símbolos num estudo de caso.</li>
+<li><b>03 • Explorar</b>Abra a casa de exemplo do WMK BIM Studio.</li>
+<li><b>04 • Praticar</b>Carregue JPG/PNG/PDF no laboratório e marque paredes.</li>
+<li><b>05 • Evoluir</b>Aprenda sobre objetos BIM, IFC, famílias e automação.</li>
+</ol>
+<p class="caution"><strong>Sobre o importador:</strong> a ferramenta JPG/PNG/PDF ainda é um laboratório HTML separado do executável Rust. Permite desenhar linhas de referência e exportar DXF/JSON; reconhecimento automático e criação de paredes BIM 3D continuam em desenvolvimento.</p>
+</main>
+<footer class="footer"><b>WMK BIM Studio</b> • Personalização e documentação: Walney Moreira Klein — walneyk@hotmail.com.<br>Base original <a href="https://github.com/IPedrax/BIMCraft">BIMCraft/IPedrax</a>, respeitando licenças e créditos de origem. Material de estudo; projetos para construção exigem profissionais habilitados.</footer>
+</body></html>
