@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="O que o projeto realmente oferece, como usar cada área, nossas alterações e como evoluir com segurança."><title>Manual completo — conhecendo o WMK BIM Studio — WMK BIM Studio</title><link rel="stylesheet" href="../manuais/estilo.css">
+<style>.toc{columns:2;max-width:880px}.toc li{break-inside:avoid}.notice{padding:14px;border:1px solid #4b7590;border-left:4px solid #26d5e6;border-radius:8px;margin:15px 0;background:#102d43}.minor{color:#9cc5dc;font-size:.93rem}.pill{padding:3px 8px;background:#153e52;border-radius:12px;display:inline-block;margin:3px}.steps{counter-reset:step}.steps>li{margin:12px 0}.small-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}.breadcrumbs{margin-top:16px;font-size:.9rem}code{overflow-wrap:anywhere}pre{white-space:pre;overflow:auto}img.screenshot{max-width:100%;border:1px solid #365f76;border-radius:12px}html{scroll-behavior:smooth}@media(max-width:700px){.toc{columns:1}}</style></head>
+<body><header><img src="../assets/wmk/logo-aprovada.webp" alt="Logo original WMK BIM Studio"><div><strong>WMK BIM Studio</strong><div class="muted">Documentação técnica e didática — português brasileiro</div></div><nav><a href="../manuais/index.html">Manuais</a><a href="../roadmap.html">Roadmap</a><a href="../pesquisas.html">Pesquisas</a><a href="../tools/planta-baixa/index.html">Importador</a><a href="https://github.com/WalneyNF/WMK-BIM-STUDIO">GitHub</a></nav></header>
+<main><div class="hero"><span class="tag">Documentação WMK • novembro de 2026</span><h1>Manual completo — conhecendo o WMK BIM Studio</h1><p>O que o projeto realmente oferece, como usar cada área, nossas alterações e como evoluir com segurança.</p></div>
+<section id="inicio"><h2>1. O que é este projeto?</h2>
+<p>O <b>WMK BIM Studio</b> é um fork do <a href="https://github.com/IPedrax/BIMCraft">BIMCraft</a>, aplicativo de modelagem da informação da construção (BIM), desenvolvido em <b>Rust</b> e com interface desktop em <b>egui/eframe</b>. A base foi criada para modelar construções com objetos paramétricos e produzir diferentes vistas e documentos a partir de um mesmo modelo. Sua automação se fundamenta em comandos estruturados, utilizáveis pela interface gráfica, linha de comando e MCP.</p>
+<p>As alterações WMK priorizam identidade visual, português brasileiro, material educativo e a proposta de trabalhar a partir de plantas baixas JPG, PNG e PDF. <b>O reconhecimento automático e a conversão integral de imagens para elementos BIM ainda não estão implementados.</b></p>
+<div class="notice"><b>Legenda de maturidade:</b> “Base original” = recursos descritos e presentes no repositório original, sujeitos a limitações; “Publicado no fork” = alteração de código/documentação gravada no GitHub; “Protótipo separado” = laboratório HTML sem integração ao desktop; “Futuro” = ainda precisa ser construído e validado.</div>
+</section>
+<section id="mapa"><h2>2. Sumário</h2><ol class="toc">
+<li><a href="#inicio">Visão geral</a></li><li><a href="#conceitos">Conceitos para iniciantes</a></li>
+<li><a href="#sistema">Componentes do programa</a></li><li><a href="#arquitetura">Modelagem arquitetônica</a></li>
+<li><a href="#estruturas">Estruturas e instalações</a></li><li><a href="#documentacao">Vistas e documentos</a></li>
+<li><a href="#formatos">Arquivos e formatos</a></li><li><a href="#agentes">IA, CLI e MCP</a></li>
+<li><a href="#interface">Navegação e personalização</a></li><li><a href="#instalar">Instalação no Windows</a></li>
+<li><a href="#primeiro">Primeiro projeto guiado</a></li><li><a href="#imagem">Plantas JPG/PNG/PDF</a></li>
+<li><a href="#wmk">Mudanças WMK</a></li><li><a href="#limites">O que falta / riscos</a></li>
+<li><a href="#arquitetura-software">Arquitetura para desenvolvedores</a></li><li><a href="#estudo">Exercícios e referências</a></li>
+</ol></section>
+<section id="conceitos"><h2>3. Arquitetura do zero: CAD, BIM, planta e escala</h2>
+<p>Uma <b>planta baixa</b> mostra um pavimento em projeção horizontal. Uma <b>fachada</b> mostra um lado externo; um <b>corte</b> revela alturas e elementos seccionados; uma <b>vista 3D</b> permite compreender o volume. Uma <b>cota</b> é uma medida representada no desenho. Um <b>nível</b> é uma referência de altura de pavimento.</p>
+<p>CAD costuma representar desenhos por linhas, polilinhas, arcos e blocos. BIM agrega significado e relações: uma parede tem tipo, espessura, altura e material; uma porta pode estar hospedada numa parede; um ambiente pode possuir área e perímetro calculados. Portanto, <b>importar linhas CAD não é o mesmo que criar paredes BIM</b>.</p>
+<div class="small-grid"><div class="card"><h3>Exemplo: escala 1:100</h3><p>1 cm no papel representa 100 cm (1 m) na construção. Para imagens digitais, a reprodução, o scanner e o zoom alteram a relação pixel/metro, exigindo calibração por uma medida conhecida.</p></div><div class="card"><h3>Exemplo: parede</h3><p>Uma linha de 4 m desenhada por cima da planta pode virar uma parede somente depois de definirmos espessura (ex.: 150 mm), altura (ex.: 2.800 mm), pavimento e sentido de referência.</p></div></div>
+<p>O sistema não deve inferir sem verificação dimensionamento estrutural, fundações, resistência de materiais, rotas de instalações ou atendimento às normas técnicas.</p></section>
+<section id="sistema"><h2>4. O que a base BIMCraft oferece</h2>
+<table><tr><th>Área</th><th>Recursos documentados na base</th><th>Atenção</th></tr>
+<tr><td>Projeto</td><td>Níveis, grids, coordenadas, planos, projeto modelo e armazenamento</td><td>A compatibilidade de versões de arquivo precisa ser conferida</td></tr>
+<tr><td>Arquitetura</td><td>Paredes, portas, janelas, pisos, tetos, cômodos, escadas, rampas, guarda-corpos, coberturas e aberturas</td><td>Funcionalidades têm graus diferentes de completude</td></tr>
+<tr><td>Estrutura</td><td>Pilares, vigas, fundações isoladas e corridas, lajes e armaduras</td><td>Modelagem não significa cálculo estrutural certificado</td></tr>
+<tr><td>MEP</td><td>Tubulações, acessórios, peças sanitárias, eletrodutos, cabos, quadros e luminárias; elementos de SPDA e dados</td><td>Conectores e verificações têm limitações</td></tr>
+<tr><td>Vistas</td><td>Plantas, vistas 3D, cortes, fachadas, elevações e quantitativos</td><td>Revisar cada documento antes de uso externo</td></tr>
+<tr><td>Documentação</td><td>Pranchas, cotas, etiquetas, textos, tabelas e impressão</td><td>A saída depende dos elementos e vistas montados</td></tr>
+<tr><td>Bibliotecas</td><td>Materiais, famílias, tipos, parâmetros e texturas</td><td>Nem todas as famílias equivalem às de programas comerciais</td></tr>
+<tr><td>Automação</td><td>CLI, scripts, comandos e acesso por MCP</td><td>Agentes precisam validação e permissões limitadas</td></tr></table>
+<p>Esta é uma descrição das capacidades documentadas no código e README originais, não uma certificação de que todo caso real funcione sem falhas.</p></section>
+<section id="arquitetura"><h2>5. Trabalho arquitetônico: passo a passo conceitual</h2>
+<ol class="steps"><li><b>Defina as unidades.</b> Use medidas consistentes; a base costuma representar comprimentos em milímetros nos comandos técnicos.</li>
+<li><b>Crie níveis.</b> Um térreo pode ficar em 0 mm e um pavimento superior em 3.000 mm, conforme o projeto.</li>
+<li><b>Desenhe paredes.</b> Insira os pontos de início/fim, confirme orientação e defina tipo e altura.</li>
+<li><b>Posicione portas e janelas.</b> Escolha tipos/famílias e encaixe nas paredes corretas.</li>
+<li><b>Crie pisos e coberturas.</b> Defina contornos, espessuras e inclinações.</li>
+<li><b>Adicione ambientes.</b> Confira fechamento das paredes e recalcule áreas.</li>
+<li><b>Verifique vistas.</b> Compare planta, corte, fachada e 3D após cada mudança importante.</li>
+<li><b>Documente.</b> Crie cotas, etiquetas, tabelas e pranchas para revisão.</li></ol>
+<img class="screenshot" loading="lazy" src="../docs/images/desktop.png" alt="Interface original BIMCraft com planta da casa de exemplo e painéis">
+<p class="minor">Imagem de documentação do BIMCraft original, para reconhecimento da interface; a aparência WMK poderá diferir após compilação e ajustes.</p>
+</section>
+<section id="estruturas"><h2>6. Estruturas e instalações</h2>
+<p><b>Estrutura:</b> vigas e pilares são elementos diferentes de uma parede arquitetônica. Fundações, armaduras e lajes estruturais requerem parâmetros e normas próprios. A base possui funções de armadura e notas de verificação, mas não se deve tratar isso como aprovação de projeto.</p>
+<p><b>Hidráulica:</b> segmentos de tubo podem ter diâmetro, materiais, níveis e inclinações. <b>Elétrica:</b> eletrodutos, cabos, dispositivos, luminárias e quadros podem ser organizados por sistemas. <b>Dados e SPDA:</b> existem categorias e componentes documentados, com interoperabilidade IFC limitada em alguns casos.</p>
+<p><b>Cuidados:</b> colisões entre disciplinas, conectividade, cargas, perda de pressão, disjuntores, proteção, acessibilidade e dimensionamento continuam exigindo conferência técnica.</p></section>
+<section id="documentacao"><h2>7. Documentação, quantitativos e exportação</h2>
+<p>As vistas 2D e 3D são geradas sobre elementos do modelo. Ao alterar geometria ou parâmetros, as informações derivadas podem ser atualizadas pelo programa. O BIMCraft possui elementos para <b>cotas, etiquetas, textos, cortes, elevações, folhas e tabelas</b>.</p>
+<p>Uma prática útil é criar uma prancha por conjunto lógico (implantação, térreo, cortes e fachadas), aplicar escala e revisar o PDF gerado. Quantitativos devem ser conferidos com a seleção de tipos, camadas e unidades.</p></section>
+<section id="formatos"><h2>8. Formatos: o que abrir e o que esperar</h2><table><tr><th>Formato</th><th>Finalidade</th><th>Estado e observação</th></tr>
+<tr><td>.bimc</td><td>Projeto nativo</td><td>Principal arquivo de trabalho do motor, sujeito a versionamento</td></tr>
+<tr><td>IFC</td><td>Troca aberta de modelos BIM</td><td>Suporte de importação/exportação na base, com limites de compatibilidade</td></tr>
+<tr><td>DXF e DWG</td><td>Referência CAD</td><td>Suporte na base; elementos importados não viram objetos BIM automaticamente</td></tr>
+<tr><td>RVT</td><td>Arquivo de Revit</td><td>Leitor com escopo limitado e requisitos de proveniência/licença próprios</td></tr>
+<tr><td>JPG, PNG</td><td>Imagem de planta baixa</td><td>Importáveis no laboratório HTML WMK, ainda não no desktop integrado</td></tr>
+<tr><td>PDF</td><td>Plantas digitais ou digitalizadas</td><td>Laboratório usa PDF.js carregado pela internet; seleção de páginas</td></tr></table>
+</section>
+<section id="agentes"><h2>9. IA, CLI e MCP: por que isso importa?</h2>
+<p>A base trabalha por comandos centralizados. Um script ou agente pode solicitar operações ao motor BIM por CLI/MCP, facilitando automação repetitiva, criação assistida e inspeção. O canal MCP não é uma garantia de que qualquer modelo de IA compreenda geometrias perfeitamente.</p>
+<pre>cargo run --release -p bimcraft-cli -- commands
+cargo run --release -p bimcraft-cli -- info projeto.bimc</pre>
+<p><b>Fluxo recomendado para agentes:</b> receber objetivo → consultar comandos disponíveis → planejar pequenas ações → executar numa cópia → validar unidades e relações → informar o que mudou → permitir desfazer. Para Groq/Ollama, a integração orientada por IA está no backlog WMK e requer testes adicionais.</p>
+</section>
+<section id="interface"><h2>10. Interface: onde ficam os controles?</h2>
+<p>A interface original utiliza faixa de ferramentas por guias, painel de <b>Propriedades</b>, <b>Navegador do Projeto</b>, abas de vistas, barra de status e personalização de tema. Existe suporte a tradução via arquivos <code>translations/ui/pt.po</code> e <code>translations/project/pt.po</code>; mensagens faltantes podem aparecer em inglês.</p>
+<p>A personalização WMK passou a indicar nome e créditos na tela inicial e a usar a logo aprovada em código de interface e ícones. A disposição de painéis estilo Blender, atalhos avançados e persistência personalizada de layout são metas futuras, não funcionalidades concluídas pelo fork WMK.</p>
+</section>
+<section id="instalar"><h2>11. Como instalar e testar no Windows</h2>
+<p>Requisitos de desenvolvimento: Git, Rust compatível (a configuração atual pede Rust 1.95 ou superior) e Visual Studio Build Tools com toolchain MSVC. Em PowerShell:</p>
+<pre>git clone https://github.com/WalneyNF/WMK-BIM-STUDIO.git
+cd WMK-BIM-STUDIO
+cargo run --release -p bimcraft -- --sample</pre>
+<p>Para diagnosticar a compilação use <code>cargo check -p bimcraft</code> e examine o log de erros. Quando disponível, os pacotes do Windows Portable aparecerão em <a href="https://github.com/WalneyNF/WMK-BIM-STUDIO/actions">Actions</a> &gt; execução concluída &gt; Artifacts.</p>
+<div class="warn"><b>Atenção:</b> na data de preparação deste manual, o workflow Windows havia apresentado falha por <code>Cargo.lock</code> e o CI por formatação; correções foram enviadas e novas execuções estavam em andamento. Sem build bem-sucedido, não declare que o EXE esteja validado.</div></section>
+<section id="primeiro"><h2>12. Exercício prático: a casa de exemplo</h2>
+<ol><li>Abra o projeto de demonstração usando <code>--sample</code>.</li><li>Encontre o navegador e selecione o pavimento térreo.</li><li>Selecione uma parede e leia suas propriedades.</li><li>Abra a vista 3D, orbite, aproxime e afaste.</li><li>Volte à planta e modifique um segmento numa cópia do projeto.</li><li>Inspecione a posição das portas e a área dos ambientes.</li><li>Abra um corte e compare com o modelo 3D.</li><li>Examine as pranchas, tabelas ou quantitativos de exemplo.</li><li>Salve um arquivo novo, feche e reabra.</li></ol>
+<p><b>Perguntas de revisão:</b> qual a diferença entre um tipo de parede e uma instância? Por que uma planta em PDF não fornece altura de parede? Como você confirma se o modelo BIM está na escala correta?</p></section>
+<section id="imagem"><h2>13. Nosso diferencial: importar planta baixa JPG/PNG/PDF</h2>
+<div class="notice"><b>Estado atual:</b> o laboratório HTML WMK carrega imagens ou páginas PDF, calibra pixels usando uma distância real, permite marcar segmentos manuais e exporta JSON/DXF. Ainda não reconhece automaticamente paredes/portas/janelas e não envia esses segmentos diretamente ao motor Rust.</div>
+<p><b>Experiência-alvo:</b> importar imagem → mostrar em vista 2D → alinhar/rotacionar e calibrar → localizar paredes e aberturas por visão computacional → usuário revisar → converter em comandos BIM → gerar modelo 3D editável. Quando a planta não inclui cotas ou informações de altura, o programa deverá pedir parâmetros, não inventá-los.</p>
+<ol><li>Abra <a href="../tools/planta-baixa/index.html">o laboratório HTML</a>.</li><li>Escolha JPG, PNG ou PDF; no PDF, selecione a página.</li><li>Informe uma distância conhecida em metros e clique nas duas extremidades da cota.</li><li>Com a ferramenta de parede, marque início e fim dos segmentos.</li><li>Exporte DXF (linhas de referência) ou JSON (coordenadas).</li><li>Importe o DXF no desktop BIMCraft como referência CAD quando o aplicativo estiver funcional.</li></ol>
+</section>
+<section id="wmk"><h2>14. O que modificamos no fork WMK</h2>
+<table><tr><th>Mudança</th><th>Estado comprovado no GitHub</th></tr>
+<tr><td>README pt-BR, preservação do original e documentação de autoria</td><td>Publicado no fork</td></tr>
+<tr><td>Logo aprovada no README, arquivos de identidade e código da tela inicial/ícone Windows</td><td>Publicado no fork; resultado compilado pendente de validação</td></tr>
+<tr><td>Nome público “WMK BIM Studio” e créditos de Walney Moreira Klein</td><td>Alteração gravada em código Rust</td></tr>
+<tr><td>Idioma português quando não houver preferência anterior</td><td>Alteração gravada; catálogo pt ainda precisa auditoria</td></tr>
+<tr><td>Manuais HTML, pesquisa, roadmap e laboratório JPG/PNG/PDF</td><td>Arquivos existentes no repositório</td></tr>
+<tr><td>GitHub Actions Windows portátil</td><td>Workflow criado; compilação sob validação</td></tr></table>
+<p><b>Créditos:</b> Walney Moreira Klein — walneyk@hotmail.com. A base original é de IPedrax e colaboradores; as licenças e avisos de proveniência devem ser mantidos.</p></section>
+<section id="limites"><h2>15. Limitações e riscos reais</h2>
+<ul><li><b>Compilação:</b> a publicação de código não prova que o executável funciona; CI e testes continuam necessários.</li>
+<li><b>Leitura de imagens:</b> a detecção automática está pendente. PDFs podem conter muitas páginas e exigir memória.</li>
+<li><b>Escala:</b> medidas extraídas de imagens podem sofrer distorções. Validar por cotas e tolerâncias.</li>
+<li><b>Precisão BIM:</b> reconhecer linhas não determina automaticamente famílias, altura, paredes estruturais ou materiais.</li>
+<li><b>Desempenho:</b> modelos grandes, renderização e interpretação de imagem precisam testes em computadores modestos.</li>
+<li><b>Interoperabilidade:</b> IFC, RVT, DWG e PDF podem perder elementos ou propriedades; validar o resultado.</li>
+<li><b>Segurança:</b> agentes precisam validação de comandos, isolamento, confirmação para alterações destrutivas e logs.</li></ul>
+<p>Consulte <a href="../roadmap.html">o roadmap WMK</a> para acompanhar prioridades e critérios de aceitação.</p></section>
+<section id="arquitetura-software"><h2>16. Arquitetura interna para desenvolvedores</h2>
+<pre>WMK BIM Studio
+├── apps/bimcraft/           Desktop Rust (janela, inicialização, ícone)
+├── apps/bimcraft-cli/       Ferramenta de linha de comando
+├── crates/core/             Modelo BIM, geometria, comandos e arquivos
+├── crates/ui-egui/          Painéis, vistas, interação e tradução UI
+├── crates/i18n/             Catálogos e consulta de mensagens
+├── crates/assistant/        Assistente de IA da base
+├── crates/cowork/           Trabalho colaborativo
+├── crates/dwg/ e rvt/       Leitores de formatos específicos
+├── translations/            Arquivos .po de interface e projeto
+├── assets/wmk/              Identidade WMK
+├── tools/planta-baixa/      Laboratório HTML separado
+├── manuais/                 Documentação didática em HTML
+└── .github/workflows/       CI e compilação
+</pre>
+<p>Na base, as ações da interface encaminham comandos ao <code>Session</code> em <code>crates/core</code>. Para converter uma planta imagem em paredes BIM, o ideal é implementar <b>um serviço de extração e validação geométrica</b>, seguido de um adaptador que produza comandos da sessão, com testes unitários e de integração. Isso evita colocar regras de BIM diretamente no navegador ou no renderizador.</p>
+<p><b>Fluxo sugerido:</b> referência raster → coordenadas calibradas → linhas e aberturas detectadas → modelo intermediário versionado → revisão → comandos BIM → verificação de geometria → salvamento. Guarde origem, versão do algoritmo e confiança de cada sugestão.</p>
+</section>
+<section id="estudo"><h2>17. Exercícios e material complementar</h2>
+<div class="small-grid"><div class="card"><h3>Iniciante</h3><p>Desenhe um cômodo 4 × 3 m, calcule 12 m² e insira porta/janela. Identifique planta, corte, fachada e vista 3D.</p><a href="arquitetura-basica.html">Apostila de conceitos</a></div>
+<div class="card"><h3>Intermediário</h3><p>Crie uma casa com dois níveis, gere planta e corte, depois confira atualização de dimensões e etiquetas.</p><a href="primeiro-contato.html">Guia operacional</a></div>
+<div class="card"><h3>Avançado</h3><p>Faça ida e volta por IFC, compare entidades e automatize a criação de elementos com CLI sob testes.</p><a href="avancado.html">Guia técnico avançado</a></div></div>
+<h2>18. Referências e leitura seguinte</h2>
+<p><a href="../README.original.en.md">README técnico original</a> · <a href="../ROADMAP.md">Roadmap original</a> · <a href="../pesquisas.html">Comparativo de concorrentes</a> · <a href="../roadmap.html">Roadmap WMK</a> · <a href="importacao-de-plantas.html">Tutorial do importador</a> · <a href="https://github.com/WalneyNF/WMK-BIM-STUDIO">Código-fonte do fork</a>.</p>
+</section></main>
+<footer>Personalização WMK — <b>Walney Moreira Klein</b> • walneyk@hotmail.com. Base BIMCraft original de IPedrax. Respeitar MIT/Apache-2.0 e avisos adicionais em NOTICE. Este material é educativo, não substitui revisão por profissional habilitado.</footer></body></html>

@@ -32,6 +32,7 @@ cargo run --release -p bimcraft -- --sample
 > O nome do pacote Cargo continua **bimcraft** para manter compatibilidade durante a personalização. O título da janela e a página inicial WMK são adaptações da interface. Compilação em Windows e release público desta personalização ainda devem ser validados.
 
 ## Documentação
+- [Manual completo do projeto](manuais/manual-completo.html)
 - [Biblioteca de manuais HTML](manuais/index.html)
 - [Como usar e instalar](manuais/primeiro-contato.html)
 - [Conceitos de arquitetura para leigos](manuais/arquitetura-basica.html)
@@ -39,7 +40,8 @@ cargo run --release -p bimcraft -- --sample
 - [Importação de plantas (tutorial)](manuais/importacao-de-plantas.html)
 - [Laboratório HTML: JPG, PNG e PDF](tools/planta-baixa/index.html)
 - [Identidade visual e personalização](manuais/personalizacao.md)
-- [Pesquisa de concorrentes e propostas de melhoria](pesquisa.html)
+- [Pesquisas e comparação de concorrentes](pesquisas.html)
+- [Pesquisa original do fork WMK](pesquisa.html)
 - [Roadmap WMK interativo](roadmap.html)
 - [Documentação técnica original (inglês)](README.original.en.md)
 - [Roadmap técnico original](ROADMAP.md)
