@@ -32,6 +32,7 @@ cargo run --release -p bimcraft -- --sample
 > O nome do pacote Cargo continua **bimcraft** para manter compatibilidade durante a personalização. O título da janela e a página inicial WMK são adaptações da interface. Compilação em Windows e release público desta personalização ainda devem ser validados.
 
 ## Documentação
+- [Minicurso para leigos — entender plantas baixas](manuais/minicurso-planta-baixa.html)
 - [Manual completo do projeto](manuais/manual-completo.html)
 - [Biblioteca de manuais HTML](manuais/index.html)
 - [Como usar e instalar](manuais/primeiro-contato.html)

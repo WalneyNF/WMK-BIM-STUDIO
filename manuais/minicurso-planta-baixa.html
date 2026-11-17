@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Minicurso de arquitetura para leigos: planta baixa, portas, janelas, cotas, cortes, fachadas e como sair da planta para um modelo BIM.">
+<title>Minicurso de plantas baixas para iniciantes — WMK BIM Studio</title>
+<link rel="stylesheet" href="estilo.css">
+<style>
+:root{--cyan:#36dfec}html{scroll-behavior:smooth}main{max-width:1160px}
+.lesson{border:1px solid #2c536b;border-radius:16px;padding:22px;margin:24px 0;background:#0e2438}
+.lesson>h2{margin-top:0}.meta{display:flex;flex-wrap:wrap;gap:8px}
+.meta span,.tag2{background:#164158;border:1px solid #2e7187;border-radius:20px;padding:4px 11px;font-size:13px}
+.side{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(250px,1fr);gap:15px}
+.diagram{background:#eff7fa;color:#173047;border:2px solid #367f94;border-radius:14px;padding:12px;overflow:auto}
+.diagram svg{display:block;width:100%;min-width:500px;height:auto;max-height:730px}
+.diagram .hit{cursor:pointer;transition:opacity .15s}.diagram .hit:focus-visible{outline:4px solid #f59032}.diagram .hit:hover{opacity:.7}
+.explain{background:#14364b;border:1px solid #27637b;border-radius:12px;padding:18px}
+.note{border-left:4px solid #e7b859;padding:12px 16px;background:#3c311c;border-radius:6px}
+.good{border-left:4px solid #43d6a8;padding:12px 16px;background:#123d34;border-radius:6px}
+.steps{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.steps .card{margin:0}
+code{color:#9df3ed}button,select{font:inherit}.choice{display:block;padding:10px;margin:7px 0;background:#133247;border:1px solid #2b6078;border-radius:9px;cursor:pointer}
+.choice:has(input:checked){border-color:#5bddec;background:#1b4b61}
+.answer{margin-top:8px;min-height:24px;font-weight:bold}
+.qcard{padding:16px 20px;margin:14px 0;border:1px solid #32627c;border-radius:10px}
+button.action{border:1px solid #56dce6;color:#e8ffff;background:#146e87;border-radius:9px;padding:10px 16px;cursor:pointer}
+button.action:hover{background:#208ba3}
+.planleg{display:flex;flex-wrap:wrap;gap:12px;font-size:.88rem;color:#b7d8e7}
+.planleg span{display:inline-flex;gap:7px;align-items:center}
+.dot{display:inline-block;width:19px;height:7px;background:white}.d-wall{background:#1c2b37;height:12px}.d-window{background:#25a4de}.d-door{background:#f5a23d}.d-dim{background:#8a5aa7}
+.toc{columns:2}.toc li{break-inside:avoid}
+@media(max-width:850px){.side{grid-template-columns:1fr}.toc{columns:1}.lesson{padding:14px}}@media print{.lesson{break-inside:avoid}.explain,.card{background:white}.note{color:black}}
+</style>
+</head><body>
+<header><img src="../assets/wmk/logo-aprovada.webp" alt="Logo original WMK BIM Studio">
+<div><strong>WMK BIM Studio — Escola de Arquitetura</strong><div class="muted">Minicurso ilustrado, em português e sem exigir conhecimento prévio</div></div>
+<nav><a href="index.html">Biblioteca</a><a href="manual-completo.html">Manual do programa</a><a href="../roadmap.html">Roadmap</a><a href="../tools/planta-baixa/index.html">Praticar no importador</a></nav>
+</header>
+<main>
+<section class="hero"><span class="tag">Trilha para iniciantes</span>
+<h1>Da planta baixa à casa: minicurso de arquitetura para leigos</h1>
+<p>Você não precisa saber arquitetura para acompanhar. Vamos começar com uma casa simples, aprender a interpretar os símbolos de uma planta e entender quais projetos e verificações vêm depois.</p>
+<div class="meta"><span>8 aulas</span><span>Planta interativa original</span><span>Exercícios com respostas</span><span>Glossário</span><span>Fontes brasileiras</span></div>
+</section>
+<div class="note"><b>Importante:</b> a casa ilustrada é um exercício didático, não um projeto para construir. Medidas de ambientes, larguras de portas e janelas, paredes e aberturas são exemplos explicativos, não recomendações para obra. Projetos reais exigem levantamento, normas atuais, legislação municipal e profissional habilitado.</div>
+<h2>Índice</h2><ol class="toc"><li><a href="#aula1">Para que serve uma planta?</a></li><li><a href="#aula2">Conheça a casa-exemplo</a></li><li><a href="#aula3">Leia cada parte da planta</a></li><li><a href="#aula4">Medidas, escalas e áreas</a></li><li><a href="#aula5">O que vem depois da planta?</a></li><li><a href="#aula6">Como a planta vira 3D no BIM</a></li><li><a href="#aula7">Exercício no WMK</a></li><li><a href="#aula8">Quiz, glossário e onde estudar</a></li></ol>
+
+<section id="aula1" class="lesson"><h2>Aula 1 — O que é e para que serve a planta baixa?</h2>
+<p>Imagine que retiramos, de forma imaginária, a parte superior das paredes de uma casa e olhamos de cima. O desenho que mostra a disposição dos cômodos, paredes e aberturas é a <b>planta baixa</b>. Em um projeto arquitetônico, ela é uma vista técnica em escala, com convenções próprias.</p>
+<div class="steps"><div class="card"><h3>Organizar os espaços</h3><p>Decidir onde ficam sala, quartos, cozinha, banheiro e caminhos de circulação.</p></div>
+<div class="card"><h3>Conferir medidas</h3><p>Ver se móveis cabem, se os acessos fazem sentido e como os ambientes se relacionam.</p></div>
+<div class="card"><h3>Comunicar ideias</h3><p>Explicar a solução para moradores, arquitetos, engenheiros, fornecedores e equipes.</p></div>
+<div class="card"><h3>Preparar projetos</h3><p>Servir de base para cortes, fachadas, instalações, compatibilização e documentação.</p></div></div>
+<p><b>O que a planta não resolve sozinha?</b> Nem sempre revela altura do pé-direito, fundações, espessura e composição das lajes, tubulações, estrutura, impermeabilização, inclinação do telhado ou especificação de materiais. Esses dados aparecem em outros desenhos e documentos.</p>
+<p class="good">Uma planta baixa é o começo da conversa sobre a casa, não a instrução completa de como construí-la.</p></section>
+
+<section id="aula2" class="lesson"><h2>Aula 2 — Nossa primeira casa: aprenda clicando na planta</h2>
+<p>Usaremos uma casa <b>fictícia</b> de <b>8 m por 6 m</b> de contorno externo, totalizando <b>48 m² de área retangular bruta de referência</b>. Como há espessuras de paredes e circulação, isso <b>não</b> significa 48 m² de área útil. As divisões do desenho são esquemáticas e não são cotas de ambientes prontos para obra.</p>
+<div class="planleg"><span><i class="dot d-wall"></i>Parede</span><span><i class="dot d-window"></i>Janela</span><span><i class="dot d-door"></i>Porta e giro</span><span><i class="dot d-dim"></i>Cota</span></div>
+<div class="side"><div class="diagram">
+<svg viewBox="0 0 860 730" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="planTitle planDesc">
+<title id="planTitle">Planta esquemática e interativa de uma casa térrea fictícia com sala, cozinha, quarto e banheiro</title>
+<desc id="planDesc">Contorno de 8 por 6 metros, sala à esquerda inferior, cozinha à direita inferior, quarto superior esquerdo, banho superior central, serviço superior direito. Parede escura, janelas azuis, portas laranja e cotas roxas. Clique nos ambientes e símbolos para explicação.</desc>
+<rect x="65" y="58" width="745" height="626" rx="12" fill="#fff"/>
+<!-- highlights/clickable room zones -->
+<g tabindex="0" class="hit" data-part="quarto"><rect x="111" y="111" width="310" height="229" fill="#f9e8c7"/><text x="266" y="215" text-anchor="middle" font-size="24" font-weight="700" fill="#35455a">QUARTO</text><text x="266" y="243" text-anchor="middle" font-size="15" fill="#5c6971">zona íntima</text></g>
+<g tabindex="0" class="hit" data-part="banheiro"><rect x="440" y="111" width="140" height="229" fill="#d4edff"/><text x="510" y="208" text-anchor="middle" font-size="18" font-weight="700" fill="#285270">BANHO</text><text x="510" y="232" text-anchor="middle" font-size="14" fill="#42627c">chuveiro + WC</text></g>
+<g tabindex="0" class="hit" data-part="servico"><rect x="600" y="111" width="139" height="229" fill="#e9e8fa"/><text x="668" y="209" text-anchor="middle" font-size="18" font-weight="700" fill="#514a75">SERVIÇO</text><text x="668" y="235" text-anchor="middle" font-size="13" fill="#605a85">lavanderia</text></g>
+<g tabindex="0" class="hit" data-part="sala"><rect x="111" y="360" width="389" height="230" fill="#dcf5dd"/><text x="300" y="468" text-anchor="middle" font-size="26" font-weight="700" fill="#31573d">SALA</text><text x="300" y="497" text-anchor="middle" font-size="15" fill="#426b4b">estar / entrada</text></g>
+<g tabindex="0" class="hit" data-part="cozinha"><rect x="520" y="360" width="219" height="230" fill="#f7e3e1"/><text x="627" y="469" text-anchor="middle" font-size="24" font-weight="700" fill="#6e4545">COZINHA</text><text x="627" y="497" text-anchor="middle" font-size="15" fill="#805c55">preparo de alimentos</text></g>
+<!-- solid walls, external with entrance gap bottom -->
+<g stroke="#1c2b37" stroke-width="16" fill="none" stroke-linecap="square"><path d="M100 100 H750 V600 H420 M345 600 H100 V100"/><path d="M430 100 V348 M590 100 V348"/><path d="M100 350 H273 M344 350 H472 M544 350 H750"/><path d="M510 350 V420 M510 487 V600"/></g>
+<!-- window overlay as colored segments cut through the dark wall -->
+<g class="hit" tabindex="0" data-part="janela" stroke="#28a6d7" stroke-width="16" fill="none" stroke-linecap="butt"><path d="M194 100 H297 M640 100 H708 M750 428 V508 M100 421 V505"/></g>
+<g stroke="#e5fbff" stroke-width="3" fill="none"><path d="M194 100 H297 M640 100 H708 M750 428 V508 M100 421 V505"/></g>
+<!-- doors and arcs simplified -->
+<g class="hit" tabindex="0" data-part="porta" stroke="#f0a13d" stroke-width="4" fill="none">
+<path d="M345 600 V525 M345 525 A75 75 0 0 1 420 600"/>
+<path d="M273 350 V279 M273 279 A71 71 0 0 1 344 350"/>
+<path d="M472 350 V279 M472 279 A72 72 0 0 1 544 350"/>
+<path d="M510 420 H577 M577 420 A67 67 0 0 1 510 487"/>
+</g>
+<g fill="#d27b22" font-size="13" font-weight="700"><text x="350" y="617">ENTRADA</text><text x="283" y="334">porta</text></g>
+<!-- bathroom fixtures, simplified -->
+<g fill="none" stroke="#6c9cbd" stroke-width="3"><rect x="459" y="123" width="51" height="55" rx="6"/><circle cx="552" cy="156" r="19"/><rect x="459" y="260" width="102" height="50" rx="8"/></g>
+<!-- room furniture simple -->
+<g fill="none" stroke="#b3996e" stroke-width="3"><rect x="129" y="142" width="113" height="148" rx="6"/><path d="M129 168 H242 M173 142 V167"/><rect x="165" y="520" width="155" height="50" rx="12"/></g>
+<g fill="none" stroke="#b97d73" stroke-width="3"><rect x="688" y="360" width="45" height="105" rx="5"/><circle cx="710" cy="395" r="13"/><circle cx="710" cy="431" r="13"/></g>
+<!-- dimension lines -->
+<g class="hit" tabindex="0" data-part="cota" stroke="#835bb7" stroke-width="2" fill="none">
+<path d="M100 73 H750 M100 66 V81 M750 66 V81 M74 100 V600 M65 100 H83 M65 600 H83"/>
+</g>
+<g fill="#744da0" font-size="20" font-weight="700"><text x="425" y="64" text-anchor="middle">8,00 m</text><text x="47" y="350" text-anchor="middle" transform="rotate(-90 47 350)">6,00 m</text></g>
+<text x="425" y="658" font-size="15" text-anchor="middle" fill="#4a5b70">Contorno externo didático de 8 × 6 m — sem escala de impressão garantida</text>
+<text x="420" y="706" font-size="14" text-anchor="middle" fill="#596b78">Os símbolos são esquemáticos. Não usar para execução de obra.</text>
+</svg>
+</div><aside class="explain" aria-live="polite"><h3 id="selected-title">Clique em uma parte da planta</h3><p id="selected-description">Clique em SALA, QUARTO, COZINHA, BANHO, SERVIÇO, uma janela azul, uma porta laranja ou a cota roxa para entender o significado.</p>
+<p class="muted"><b>Dica:</b> você pode usar a tecla Tab e Enter para explorar a planta pelo teclado.</p>
+</aside></div>
+<div class="note"><b>Por que a planta tem áreas sem números?</b> Para começar, queremos entender <b>o papel de cada elemento</b>. Num projeto de verdade, precisaríamos cotar largura, comprimento, espessura de paredes, posição de vãos e conferir a área útil dos ambientes.</div>
+</section>
+
+<section id="aula3" class="lesson"><h2>Aula 3 — Entendendo cada desenho e símbolo</h2>
+<table><thead><tr><th>Na planta</th><th>O que quer dizer</th><th>O que conferir em um projeto real</th></tr></thead><tbody>
+<tr><td><b>Paredes escuras</b></td><td>Dividem ambientes ou fecham a construção</td><td>Espessura, material, se é estrutural, altura e aberturas</td></tr>
+<tr><td><b>Portas laranja e arcos</b></td><td>Passagens e sentido esquemático do giro da folha</td><td>Largura livre, interferência com móveis, acessibilidade e rota de saída</td></tr>
+<tr><td><b>Janelas azuis</b></td><td>Aberturas em fachadas</td><td>Largura, altura, peitoril, insolação, ventilação e segurança</td></tr>
+<tr><td><b>Nomes dos ambientes</b></td><td>Função prevista para cada espaço</td><td>Dimensões úteis, uso, circulação e mobiliário</td></tr>
+<tr><td><b>Cotas roxas</b></td><td>Medidas de referência indicadas no desenho</td><td>Unidade, extensão a que se refere e coerência com outras cotas</td></tr>
+<tr><td><b>Aparelhos sanitários</b></td><td>Posição ilustrativa de lavatório, bacia e banho</td><td>Vãos de uso, esgoto, água, ventilação e impermeabilização</td></tr>
+<tr><td><b>Móveis</b></td><td>Ajuda a avaliar aproveitamento do cômodo</td><td>Medidas reais, circulação e abertura de portas</td></tr>
+</tbody></table>
+<p><b>Outras informações que uma planta técnica costuma possuir:</b> norte, título e número do desenho, escala, nome do pavimento, eixos, níveis, legenda, identificação de portas/janelas, linhas de corte, cotas internas e externas, áreas, notas e quadro de revisões. Nem todas aparecerão em desenhos preliminares.</p>
+</section>
+
+<section id="aula4" class="lesson"><h2>Aula 4 — Medidas, escala, perímetro e área</h2>
+<div class="steps"><div class="card"><h3>Medidas</h3><p>8,00 m representa oito metros. 0,80 m equivale a 80 cm. Em modelos digitais, podem existir medidas internas em milímetros: 8 m = 8.000 mm.</p></div>
+<div class="card"><h3>Escala 1:100</h3><p>1 cm no papel representa 100 cm reais. Uma parede de 4 m aparece com 4 cm no papel se impressa corretamente nessa escala.</p></div>
+<div class="card"><h3>Área bruta ilustrativa</h3><p>8 m × 6 m = <strong>48 m²</strong> de retângulo externo, sem descontar paredes. A área útil da sala/quarto será diferente.</p></div>
+<div class="card"><h3>Perímetro</h3><p>Para um retângulo 8 × 6 m: 2 × (8 + 6) = <strong>28 m</strong>. Não equivale a quantidade de tijolos ou de paredes internas.</p></div></div>
+<p>Em JPG/PDF digitalizado, o número de pixels muda com zoom e digitalização. Por isso é preciso <b>calibrar uma cota conhecida</b>: se 400 pixels correspondem a 4 metros, são 100 pixels por metro. Esse valor é válido para aquele arquivo renderizado e aquela geometria de referência.</p>
+<p class="note">Nunca use um print de tela como garantia de escala para construir: confira dimensões cotadas e, na obra, as condições reais medidas.</p>
+</section>
+
+<section id="aula5" class="lesson"><h2>Aula 5 — Depois da planta baixa, o que deve ser feito?</h2>
+<p><b>Não existe uma ordem universal rígida:</b> muitas etapas são revisadas em conjunto. Para leigos, esta é uma sequência didática que acompanha as fases de projeto descritas pelo CAU/BR.</p>
+<div class="steps">
+<div class="card"><span class="tag">1</span><h3>Necessidades e terreno</h3><p>Definir moradores, quantidade de cômodos, orçamento aproximado, lote, orientação solar, topografia e regras urbanísticas.</p></div>
+<div class="card"><span class="tag">2</span><h3>Estudo preliminar</h3><p>Criar alternativas de distribuição dos cômodos e da implantação. Aqui surgem plantas iniciais, croquis e modelos de estudo.</p></div>
+<div class="card"><span class="tag">3</span><h3>Anteprojeto</h3><p>Consolidar planta, volumes, fachadas, acessos, cortes preliminares e decisões principais.</p></div>
+<div class="card"><span class="tag">4</span><h3>Projeto legal</h3><p>Preparar documentos para análise e aprovação pelos órgãos competentes, conforme regras municipais e do terreno.</p></div>
+<div class="card"><span class="tag">5</span><h3>Projetos técnicos</h3><p>Estrutural, fundações, elétrica, hidrossanitário e demais especialidades conforme necessidade; profissionais coordenam interferências.</p></div>
+<div class="card"><span class="tag">6</span><h3>Projeto executivo</h3><p>Detalhar materiais, dimensões, portas, janelas, instalações, acabamentos e soluções necessárias à execução.</p></div>
+<div class="card"><span class="tag">7</span><h3>Quantitativos e planejamento</h3><p>Levantar serviços, materiais, custos, prazos e responsabilidades a partir de projetos coordenados.</p></div>
+<div class="card"><span class="tag">8</span><h3>Obra e acompanhamento</h3><p>Executar segundo licenças e projetos, com responsabilidade técnica, fiscalização e ajustes documentados.</p></div></div>
+<h3>Outros desenhos que você vai encontrar</h3>
+<table><tr><th>Documento</th><th>Pergunta que responde</th></tr>
+<tr><td><b>Implantação</b></td><td>Onde a construção fica dentro do terreno? Quais os afastamentos?</td></tr>
+<tr><td><b>Corte</b></td><td>Qual a altura dos ambientes? Como são os níveis, lajes e a cobertura?</td></tr>
+<tr><td><b>Fachada</b></td><td>Como a casa parece vista do lado de fora?</td></tr>
+<tr><td><b>Planta de cobertura</b></td><td>Como se organiza o telhado, quedas e drenagem?</td></tr>
+<tr><td><b>Estrutural/fundações</b></td><td>Como os esforços serão suportados pelo sistema projetado?</td></tr>
+<tr><td><b>Elétrico/hidrossanitário</b></td><td>Como funcionam pontos, circuitos, alimentação, água e esgoto?</td></tr>
+<tr><td><b>Detalhes executivos</b></td><td>Como executar os encontros, juntas, fixações e acabamentos?</td></tr></table>
+<p>O CAU/BR descreve estudo preliminar, anteprojeto, projeto básico, desenhos para aprovação e desenvolvimento executivo, incluindo planta baixa, cortes, fachadas e cobertura: <a href="https://caubr.gov.br/contrate-um-arquiteto-12-passos/">veja o guia oficial</a>.</p>
+</section>
+
+<section id="aula6" class="lesson"><h2>Aula 6 — Como o computador transforma a planta em 3D?</h2>
+<p>Num programa de modelagem BIM, o 3D pode ser gerado a partir dos <b>objetos que você cria</b>. Uma parede BIM não é só um risco: pode registrar comprimento, espessura, altura, tipo, materiais e pavimento. Portas e janelas precisam de modelos e posições associadas às paredes.</p>
+<div class="steps"><div class="card"><h3>Desenho 2D</h3><p>Linhas, medidas e divisões indicam a proposta da casa.</p></div><div class="card"><h3>Elementos BIM</h3><p>Usuário confirma paredes, aberturas, alturas, níveis e materiais.</p></div><div class="card"><h3>Modelo 3D</h3><p>O programa exibe paredes levantadas, laje/cobertura e vãos.</p></div><div class="card"><h3>Vistas e documentos</h3><p>Cortes, fachadas, quantitativos e pranchas podem ser derivados do modelo.</p></div></div>
+<h3>E no WMK BIM Studio?</h3>
+<p>O BIMCraft original possui motor para elementos paramétricos e vistas 3D. Nossa personalização WMK criou um <b>laboratório separado em HTML</b> para JPG/PNG/PDF, calibração e desenho manual, com exportação JSON/DXF. Ainda <b>não</b> basta colocar uma foto e obter automaticamente paredes BIM editáveis no aplicativo Rust: reconhecimento e integração estão no roadmap.</p>
+<p class="good"><b>Visão de produto:</b> importar planta → ajustar escala → sugerir paredes/portas/janelas → revisar erros → gerar objetos BIM → completar alturas e materiais → visualizar 3D → extrair desenhos. A etapa de revisão é indispensável.</p>
+</section>
+
+<section id="aula7" class="lesson"><h2>Aula 7 — Seu primeiro exercício prático no WMK BIM Studio</h2>
+<ol><li>Salve esta página para consultar a planta fictícia e seus elementos.</li>
+<li>Abra o <a href="../tools/planta-baixa/index.html">laboratório de importação</a> do fork num navegador.</li>
+<li>Obtenha uma imagem de planta baixa didática com ao menos uma dimensão escrita; a planta interativa desta aula não é, por si só, um arquivo JPG.</li>
+<li>Carregue JPG/PNG ou PDF. O PDF precisa da biblioteca PDF.js online nesta versão.</li>
+<li>Leia uma cota conhecida do desenho e digite a distância em metros.</li>
+<li>Clique em <b>Calibrar</b> e marque as extremidades daquela medida.</li>
+<li>Escolha <b>Desenhar parede</b> e clique no início e no fim dos segmentos visíveis.</li>
+<li>Exporte JSON para conferir coordenadas, ou DXF para importar linhas CAD como referência.</li>
+<li>Observe que o DXF ainda são linhas; para virarem paredes BIM, o sistema precisa de dados como nível, altura e espessura.</li></ol>
+<p><b>Desafio para desenvolvedores:</b> compare a planta marcada com as medidas originais. Um bom importador deve detectar erros de escala e manter uma forma de corrigir segmentos antes de gerar objetos BIM.</p>
+</section>
+
+<section id="aula8" class="lesson"><h2>Aula 8 — Verifique o aprendizado</h2>
+<div class="qcard" data-question="1"><h3>1. Uma planta baixa mostra principalmente...</h3>
+<label class="choice"><input type="radio" name="q1" value="0"> As fundações já dimensionadas</label>
+<label class="choice"><input type="radio" name="q1" value="1"> A organização dos ambientes e aberturas vista de cima</label>
+<label class="choice"><input type="radio" name="q1" value="0"> O cálculo completo da rede elétrica</label><p class="answer" id="a1"></p></div>
+<div class="qcard" data-question="2"><h3>2. Um cômodo interno de 4 m × 3 m tem qual área geométrica?</h3>
+<label class="choice"><input type="radio" name="q2" value="0"> 7 m²</label>
+<label class="choice"><input type="radio" name="q2" value="1"> 12 m²</label>
+<label class="choice"><input type="radio" name="q2" value="0"> 24 m²</label><p class="answer" id="a2"></p></div>
+<div class="qcard" data-question="3"><h3>3. Uma imagem da planta, sozinha, informa necessariamente a altura das paredes?</h3>
+<label class="choice"><input type="radio" name="q3" value="0"> Sim, sempre</label>
+<label class="choice"><input type="radio" name="q3" value="1"> Não; é preciso outra informação ou confirmação</label><p class="answer" id="a3"></p></div>
+<div class="qcard" data-question="4"><h3>4. A exportação atual do laboratório WMK cria automaticamente paredes BIM?</h3>
+<label class="choice"><input type="radio" name="q4" value="1"> Não; exporta linhas de referência e coordenadas</label>
+<label class="choice"><input type="radio" name="q4" value="0"> Sim, já cria uma casa técnica pronta para obra</label><p class="answer" id="a4"></p></div>
+<button class="action" id="check">Corrigir respostas</button><p id="result" aria-live="polite"></p>
+<h2>Glossário essencial</h2><table><tr><th>Termo</th><th>Significado simples</th></tr><tr><td>Planta baixa</td><td>Vista horizontal do pavimento para leitura e planejamento</td></tr><tr><td>Cota</td><td>Medida indicada em desenho</td></tr><tr><td>Escala</td><td>Proporção entre representação e tamanho real</td></tr><tr><td>Vão</td><td>Abertura destinada, por exemplo, à passagem, porta ou janela</td></tr><tr><td>Pé-direito</td><td>Altura livre entre piso acabado e teto/forro, conforme convenção usada</td></tr><tr><td>Corte</td><td>Representação vertical que revela alturas e elementos seccionados</td></tr><tr><td>Fachada</td><td>Vista da parte externa da edificação</td></tr><tr><td>Implantação</td><td>Posição da construção no lote</td></tr><tr><td>BIM</td><td>Processo de modelagem da informação da construção, além da simples geometria 3D</td></tr><tr><td>IFC</td><td>Padrão aberto de intercâmbio de dados BIM</td></tr></table>
+<h2>Onde estudar mais (fontes verificadas)</h2>
+<ul><li><a href="https://caubr.gov.br/contrate-um-arquiteto-12-passos/">CAU/BR — etapas do projeto de arquitetura</a>. Boa referência brasileira para entender como profissionais trabalham e quais desenhos compõem o projeto.</li>
+<li><a href="https://www.gov.br/dnit/pt-br/assuntos/planejamento-e-pesquisa/bim-no-dnit/base-de-conhecimento/termos-e-definicoes/termos-e-definicoes-bim">DNIT — termos e definições BIM</a>. Glossário técnico em português sobre modelagem e IFC.</li>
+<li><a href="https://cursos.sesisenai.org.br/cursos-profissionalizantes/leitura-e-interpretacao-de-projetos-da-construcao-civil/54">SENAI — Leitura e Interpretação de Projetos da Construção Civil</a>. Conteúdo de desenho técnico, escalas, cortes, simbologia e projetos. Verificar turma, preço e pré-requisitos na sua região.</li>
+<li><a href="https://www.pe.senai.br/cursos/basico-de-construcao-civil-2/">SENAI — Básico de Construção Civil</a>. Abrange matemática, áreas, escalas, interpretação de projetos e noções de execução.</li>
+<li><a href="https://standards.buildingsmart.org/IFC/RELEASE/IFC4_3/HTML/content/introduction.htm">buildingSMART — IFC</a>. Documentação técnica do padrão aberto de intercâmbio BIM (em inglês).</li>
+<li><a href="https://github.com/WalneyNF/WMK-BIM-STUDIO/tree/main/manuais">WMK BIM Studio — manuais do projeto</a>. Para praticar com o software e evoluir em BIM.</li></ul>
+<p class="note">Normas técnicas (por exemplo, desenho arquitetônico, acessibilidade, desempenho e instalações) possuem versões e exigências próprias; procure sempre edições vigentes e orientação profissional. Este minicurso não substitui habilitação de arquiteto/engenheiro ou aprovação municipal.</p>
+</section>
+</main><footer>Minicurso WMK BIM Studio • Walney Moreira Klein — walneyk@hotmail.com • Exemplo esquemático original desenvolvido para fins educativos. Base do aplicativo: BIMCraft, de IPedrax. Direitos e licenças originais preservados.</footer>
+<script>
+(()=>{'use strict';
+const descriptions={
+quarto:['QUARTO','Espaço reservado para dormir. Na planta é possível estudar localização da cama, posição da janela, privacidade e acesso. Um projeto real precisa confirmar medidas livres, ventilação e normas aplicáveis.'],
+banheiro:['BANHO','Ambiente com chuveiro, bacia sanitária e lavatório de forma ilustrativa. É preciso projeto hidrossanitário, impermeabilização, ventilação e espaço de circulação adequado.'],
+servico:['SERVIÇO / LAVANDERIA','Local destinado a lavar roupas e guardar equipamentos. Veja pontos de água, esgoto, energia, ventilação e acesso; o desenho é apenas uma ideia.'],
+sala:['SALA','Local de convivência e entrada. Observe a porta principal, as janelas, circulação e espaços dos móveis. O contorno não representa necessariamente área útil.'],
+cozinha:['COZINHA','Espaço de preparo de alimentos. Na fase técnica entram bancadas, pontos de água, esgoto, energia, ventilação, equipamentos e segurança.'],
+janela:['JANELA','Os trechos azuis representam aberturas. Janelas podem variar em tamanho, tipo, altura de peitoril, ventilação e iluminação. Não sabemos essas medidas pela cor: precisam de cotas/quadro de esquadrias.'],
+porta:['PORTA','As linhas laranja e arcos indicam uma passagem e a trajetória esquemática da folha ao abrir. Em planta real, confirme largura livre, sentido de abertura, altura e interferências.'],
+cota:['COTA / MEDIDA','As linhas roxas mostram o contorno externo ilustrativo de 8 m × 6 m. Ao medir interiores, descontam-se espessuras de paredes. Em PDF ou JPG a escala em pixels não é garantida.']
+};
+const title=document.getElementById('selected-title'),description=document.getElementById('selected-description');
+for(const node of document.querySelectorAll('[data-part]')){const fn=()=>{const val=descriptions[node.dataset.part];title.textContent=val[0];description.textContent=val[1]};node.addEventListener('click',fn);node.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fn()}})}
+document.getElementById('check').addEventListener('click',()=>{let score=0;for(let i=1;i<=4;i++){const checked=document.querySelector('input[name="q'+i+'"]:checked');const a=document.getElementById('a'+i);if(!checked){a.textContent='Escolha uma alternativa.';a.style.color='#ffcc91';continue}const yes=checked.value==='1';if(yes)score++;a.textContent=yes?'Correto!':'Ainda não. Releia o assunto nas aulas anteriores.';a.style.color=yes?'#88f1bb':'#ffbb90'}document.getElementById('result').textContent='Você acertou '+score+' de 4 questões.'});
+})();
+</script></body></html>
