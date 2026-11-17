@@ -42,7 +42,7 @@ cargo run --release -p bimcraft -- --sample
 - [Identidade visual e personalização](manuais/personalizacao.md)
 - [Pesquisas e comparação de concorrentes](pesquisas.html)
 - [Pesquisa original do fork WMK](pesquisa.html)
-- [Roadmap WMK interativo](roadmap.html)
+- [Roadmap WMK detalhado e interativo](roadmap.html)
 - [Documentação técnica original (inglês)](README.original.en.md)
 - [Roadmap técnico original](ROADMAP.md)
 
