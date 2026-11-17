@@ -11,6 +11,16 @@ O **WMK BIM Studio** é um ambiente de modelagem BIM em Rust para criar e editar
 ### Diferencial planejado: importar plantas baixas
 Queremos permitir que um iniciante forneça **JPG, PNG ou PDF**, ajuste uma escala conhecida e transforme a planta em elementos BIM editáveis. Este fluxo **ainda está em desenvolvimento**. O objetivo tem fases: imagem de referência; calibração; traçado manual; detecção assistida; revisão; geração do modelo BIM 3D. Uma imagem sozinha não garante cotas, altura, materiais, instalações ou estrutura corretos.
 
+### Reconhecimento automático experimental de paredes (WMK)
+
+O laboratório web agora inclui **✨ Detectar paredes**: encontra segmentos candidatos pela cor das paredes (especialmente útil na planta humanizada com paredes laranja), desenha prévia verde e permite aceitar ou descartar. **Não exige desenhar tudo com pincel**. O reconhecimento atual é geométrico por cor, sem API e sem OCR; plantas com paredes pretas, sombras e outras cores podem precisar de um modelo especializado.
+
+Após revisão dos segmentos e definição de uma distância real conhecida, **🏠 Gerar paredes para BIM** exporta um script `wmk-paredes-bim.txt` com comandos `wall` para o motor Rust. O usuário pode abrir **Gerenciar → Executar script**, colar, testar e executar em projeto de teste. **Ainda não é importação automática de uma casa 3D**; não reconstrói portas, janelas, piscina, estruturas nem resolve os elementos falsamente classificados.
+
+**Reaproveitamento investigado de outros forks:** `WalneyNF/EasyOCR` (leitura de cotas e textos), `WalneyNF/WMK-Document-AI-Studio` (OCR e análise de documentos; revisar licença dos pesos do Indra) e `WalneyNF/CodeProject.AI-Server` (API local de IA; licença SSPL). Nenhum desses transforma uma planta diretamente em BIM sozinho. Integração de OCR para leitura automática de cotas, modelo de segmentação treinado para plantas arquitetônicas e transferência nativa ao projeto são as próximas etapas.
+
+[Guia do reconhecimento e geração de comandos BIM](manuais/guia-botoes-importador.html)
+
 ### Como importar JPG, PNG ou PDF nesta versão
 
 > **IMPORTANTE PARA QUEM INSTALOU O EXE:** o menu **Abrir** do WMK BIM Studio **não aceita JPG, PNG nem PDF como plantas baixas** nesta versão. O laboratório de imagens é uma **página HTML separada do executável Rust**. Esta escolha é provisória, usada para testes, e **não é a interface final desejada**.
