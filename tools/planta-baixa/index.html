@@ -235,7 +235,7 @@ $('exportBimScript').onclick=()=>{
     '# A origem da imagem foi adotada como (0,0), y positivo para cima',
     ...lines.map(l=>'wall '+JSON.stringify({points:[[mm(l.a.x),-mm(l.a.y)],[mm(l.b.x),-mm(l.b.y)]],type:'Interior - 100mm'}))
   ];
-  save('wmk-paredes-bim.txt',commands.join('\\n')+'\\n','text/plain');
+  save('wmk-paredes-bim.txt',commands.join('\n')+'\n','text/plain');
   msg('Script de '+lines.length+' paredes criado. No aplicativo: Gerenciar → Executar Script → cole o texto, Testar e só depois Executar. Isso cria paredes, não uma casa completa.');
 };
 $('exportDxf').onclick=()=>{if(!ensure())return;let d=['0','SECTION','2','HEADER','9','$ACADVER','1','AC1009','9','$INSUNITS','70','4','0','ENDSEC','0','SECTION','2','ENTITIES'];const f=n=>(Math.round(n*1000)/1000).toString();for(const l of lines){let a=l.a,b=l.b;d.push('0','LINE','8','WMK_PAREDES_TRACADAS','10',f(1000*a.x/pxPerMeter),'20',f(-1000*a.y/pxPerMeter),'30','0','11',f(1000*b.x/pxPerMeter),'21',f(-1000*b.y/pxPerMeter),'31','0')}d.push('0','ENDSEC','0','EOF');save('wmk-planta-tracada.dxf',d.join('\r\n')+'\r\n','application/dxf');msg('DXF exportado. No WMK BIM Studio: Inserir → Importar CAD. As linhas são referências, não paredes BIM.')};draw();})();
