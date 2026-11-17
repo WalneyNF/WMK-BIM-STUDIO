@@ -1,0 +1,97 @@
+name: Publicar WMK BIM Studio - prévia Windows
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/wmk-publicar-preview.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  publicar:
+    name: Publicar ZIP público de teste
+    runs-on: ubuntu-latest
+    steps:
+      - name: Obter código e instruções
+        uses: actions/checkout@v4
+
+      - name: Baixar binários da compilação Windows aprovada
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p pacote
+          gh run download 43983448756 --repo "${{ github.repository }}" --name WMK-BIM-Studio-Windows-portatil --dir pacote
+          test -s pacote/WMK-BIM-Studio.exe
+          test -s pacote/bimcraft-cli.exe
+          test -s pacote/LICENSE-MIT
+          test -s pacote/LICENSE-APACHE
+
+      - name: Empacotar para downloads públicos
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p saida
+          (
+            cd pacote
+            zip -q -r ../saida/WMK-BIM-Studio-0.12.0-Windows-Preview.zip .
+          )
+          (cd saida && sha256sum WMK-BIM-Studio-0.12.0-Windows-Preview.zip > SHA256SUMS.txt)
+          cat > saida/LEIA-ME-PRIMEIRO.txt <<'EOF'
+          WMK BIM Studio 0.12.0 - PREVIA EXPERIMENTAL WINDOWS
+          Personalizacao: Walney Moreira Klein - walneyk@hotmail.com
+          Base original: IPedrax/BIMCraft. Consulte licencas MIT, Apache-2.0 e NOTICE.
+
+          1. Extraia todo o ZIP para uma pasta.
+          2. Execute WMK-BIM-Studio.exe.
+          3. Abra o projeto de exemplo e teste ferramentas e salvamento.
+          4. Reporte falhas em GitHub Issues.
+
+          IMPORTANTE: O importador JPG/PNG/PDF e' atualmente um laboratorio HTML
+          separado em tools/planta-baixa/index.html, no repositorio.
+          Nao ha reconhecimento automatico nem conversao de imagem em BIM 3D.
+          Esta e' uma previa para testes, nao uma versao estavel.
+          EOF
+
+      - name: Publicar Release pública e arquivo ZIP
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="v0.12.0-wmk-preview.1"
+          if gh release view "$TAG" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo "Release $TAG já publicada."
+            exit 0
+          fi
+          cat > notas.md <<'EOF'
+          ## WMK BIM Studio — prévia experimental para Windows
+
+          **Base:** BIMCraft 0.12.0, com personalização WMK. **Autor da personalização:** Walney Moreira Klein — walneyk@hotmail.com.
+          Créditos e licenças originais do BIMCraft/IPedrax preservados.
+
+          ### Como baixar e testar
+          Baixe **WMK-BIM-Studio-0.12.0-Windows-Preview.zip** em Assets, extraia todos os arquivos e execute `WMK-BIM-Studio.exe`. Abra o projeto de exemplo, navegue por 2D/3D, salve e reabra uma cópia. Reporte problemas em Issues.
+
+          **Atenção:** versão experimental, sem validação completa em computadores de usuários. O importador de plantas JPG/PNG/PDF existe como laboratório HTML no repositório e **ainda não está integrado ao executável Rust**. Não gera casas 3D automaticamente a partir de imagens.
+
+          A compilação Windows que gerou esses binários foi a [execução #43983448756](https://github.com/WalneyNF/WMK-BIM-STUDIO/actions/runs/43983448756), no commit `d0adbe457d429e26f9eedd35cb99e18cdb31bcfc`. As atualizações posteriores de documentação não fazem parte dos binários desta prévia.
+
+          ### Verificar integridade
+          O asset **SHA256SUMS.txt** contém o hash SHA-256 do ZIP. Em Windows: `Get-FileHash .\WMK-BIM-Studio-0.12.0-Windows-Preview.zip -Algorithm SHA256`.
+
+          ### Documentação
+          [Manuais em português](https://github.com/WalneyNF/WMK-BIM-STUDIO/tree/main/manuais) · [Roadmap](https://github.com/WalneyNF/WMK-BIM-STUDIO/blob/main/roadmap.html) · [Laboratório de plantas](https://github.com/WalneyNF/WMK-BIM-STUDIO/blob/main/tools/planta-baixa/index.html)
+          EOF
+          gh release create "$TAG" \
+            saida/WMK-BIM-Studio-0.12.0-Windows-Preview.zip \
+            saida/SHA256SUMS.txt \
+            saida/LEIA-ME-PRIMEIRO.txt \
+            --repo "${{ github.repository }}" \
+            --target d0adbe457d429e26f9eedd35cb99e18cdb31bcfc \
+            --title "WMK BIM Studio 0.12.0 — Prévia Windows" \
+            --notes-file notas.md \
+            --prerelease
