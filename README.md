@@ -11,6 +11,23 @@ O **WMK BIM Studio** é um ambiente de modelagem BIM em Rust para criar e editar
 ### Diferencial planejado: importar plantas baixas
 Queremos permitir que um iniciante forneça **JPG, PNG ou PDF**, ajuste uma escala conhecida e transforme a planta em elementos BIM editáveis. Este fluxo **ainda está em desenvolvimento**. O objetivo tem fases: imagem de referência; calibração; traçado manual; detecção assistida; revisão; geração do modelo BIM 3D. Uma imagem sozinha não garante cotas, altura, materiais, instalações ou estrutura corretos.
 
+### Como importar JPG, PNG ou PDF nesta versão
+
+> **IMPORTANTE PARA QUEM INSTALOU O EXE:** o menu **Abrir** do WMK BIM Studio **não aceita JPG, PNG nem PDF como plantas baixas** nesta versão. O laboratório de imagens é uma **página HTML separada do executável Rust**. Esta escolha é provisória, usada para testes, e **não é a interface final desejada**.
+
+**Teste disponível agora:**
+
+1. Baixe o repositório completo em **Code → Download ZIP** e extraia mantendo as pastas.
+2. Abra `tools/planta-baixa/index.html` no Chrome ou Edge.
+3. Escolha a imagem JPG/PNG ou PDF; o PDF utiliza PDF.js carregado da internet.
+4. Informe uma distância real conhecida, use **Calibrar** e clique nos extremos da medida.
+5. Use **Desenhar parede** para marcar linhas por cima da imagem.
+6. Exporte **DXF** (linhas CAD de referência) ou **JSON** (coordenadas). Isso **não cria paredes BIM automaticamente**.
+
+**Como será no aplicativo final:** `Inserir → Importar planta baixa` deverá receber JPG/PNG/PDF dentro da janela Rust, mostrar a imagem como referência 2D, calibrar, salvar a camada raster no projeto e permitir converter o traçado revisado em paredes BIM editáveis. Reconhecimento por IA será uma etapa posterior, com conferência das medidas e dados ausentes.
+
+[Manual passo a passo da importação](manuais/importacao-de-plantas.html) · [Laboratório HTML](tools/planta-baixa/index.html) · [Roadmap](roadmap.html)
+
 ## Funcionalidades da base BIMCraft
 | Área | Recursos |
 |---|---|
