@@ -20,6 +20,10 @@ pub(crate) struct PlantImport {
     first: Option<Pos2>,
     lines: Vec<(Pos2, Pos2)>,
     message: String,
+    /// Ampliação relativa ao enquadramento na janela: 1 = ajustar.
+    zoom: f32,
+    show_measurements: bool,
+    snap: bool,
 }
 
 impl Default for PlantImport {
@@ -29,6 +33,9 @@ impl Default for PlantImport {
             meters: 4.0, pixels_per_meter: None, mode: Mode::Calibrate,
             first: None, lines: Vec::new(),
             message: "Escolha uma planta JPG ou PNG para começar.".to_owned(),
+            zoom: 1.0,
+            show_measurements: true,
+            snap: true,
         }
     }
 }
@@ -59,6 +66,7 @@ impl PlantImport {
             self.first = None;
             self.pixels_per_meter = None;
             self.mode = Mode::Calibrate;
+            self.zoom = 1.0;
             Ok(())
         })();
         self.message = match outcome {
@@ -119,27 +127,70 @@ impl PlantImport {
         if let Some(px) = self.pixels_per_meter {
             ui.label(format!("Escala: {:.2} pixels/metro · {} segmentos", px, self.lines.len()));
         }
+        ui.horizontal_wrapped(|ui| {
+            ui.label("Zoom:");
+            if ui.button("−").on_hover_text("Diminuir zoom").clicked() {
+                self.zoom = (self.zoom / 1.25).clamp(0.1, 5.0);
+            }
+            if ui.button("+").on_hover_text("Aumentar zoom").clicked() {
+                self.zoom = (self.zoom * 1.25).clamp(0.1, 5.0);
+            }
+            if ui.button("Ajustar").clicked() {
+                self.zoom = 1.0;
+            }
+            ui.add(egui::Slider::new(&mut self.zoom, 0.1..=5.0).text("x").logarithmic(true));
+            ui.label(format!("{:.0}%", self.zoom * 100.0));
+        });
+        ui.horizontal_wrapped(|ui| {
+            ui.checkbox(&mut self.show_measurements, "Mostrar comprimentos");
+            ui.checkbox(&mut self.snap, "Snap nos extremos");
+        });
         ui.label(&self.message);
+        ui.label("Use as barras de rolagem horizontal/vertical para navegar na imagem ampliada. O zoom não altera as medidas reais.");
         ui.label("O traçado é uma referência visual. Não modifica as paredes do projeto BIM.");
     }
 
     fn canvas(&mut self, ui: &mut Ui) {
         let Some(texture) = &self.texture else { return };
         let native = Vec2::new(self.pixels[0] as f32, self.pixels[1] as f32);
-        let max_size = ui.available_size();
-        let ratio = (max_size.x / native.x).min((max_size.y / native.y).max(0.01)).clamp(0.01, 1.0);
+        // A área visível (clip_rect) permanece estável quando a ScrollArea amplia o conteúdo.
+        let visible = ui.clip_rect().size();
+        let fit = ((visible.x - 16.0) / native.x)
+            .min((visible.y - 16.0) / native.y)
+            .clamp(0.01, 1.0);
+        let ratio = fit * self.zoom;
         let (rect, response) = ui.allocate_exact_size(native * ratio, Sense::click());
         ui.painter().image(texture.id(), rect, Rect::from_min_max(Pos2::ZERO, Pos2::new(1.0, 1.0)), Color32::WHITE);
         let to_screen = |p: Pos2| rect.min + p.to_vec2() * ratio;
         for (a, b) in &self.lines {
             ui.painter().line_segment([to_screen(*a), to_screen(*b)], Stroke::new(3.0, Color32::RED));
+            if self.show_measurements {
+                if let Some(px) = self.pixels_per_meter {
+                    let length = a.distance(*b) / px;
+                    let center = to_screen(Pos2::new((a.x+b.x)*0.5,(a.y+b.y)*0.5));
+                    ui.painter().text(center, egui::Align2::CENTER_BOTTOM, format!("{length:.2} m"), egui::FontId::proportional(13.0), Color32::YELLOW);
+                }
+            }
         }
         if let Some(a) = self.first {
             ui.painter().circle_filled(to_screen(a), 5.0, Color32::YELLOW);
         }
         if response.clicked() {
             if let Some(pointer) = response.interact_pointer_pos() {
-                let p = Pos2::new((pointer.x - rect.min.x) / ratio, (pointer.y - rect.min.y) / ratio);
+                let mut p = Pos2::new((pointer.x - rect.min.x) / ratio, (pointer.y - rect.min.y) / ratio);
+                if self.mode == Mode::Trace && self.snap {
+                    let max_dist = 12.0 / ratio;
+                    let mut nearest = max_dist;
+                    for (a,b) in &self.lines {
+                        for end in [a,b] {
+                            let distance = p.distance(*end);
+                            if distance < nearest {
+                                p = *end;
+                                nearest = distance;
+                            }
+                        }
+                    }
+                }
                 if let Some(a) = self.first.take() {
                     let distance = a.distance(p);
                     if distance < 2.0 {
@@ -181,11 +232,14 @@ impl BimApp {
             .default_size([950.0, 730.0])
             .resizable(true)
             .show(ctx, |ui| {
-                egui::ScrollArea::vertical().show(ui, |ui| {
-                    self.plant_import.controls(ui);
-                    ui.separator();
-                    self.plant_import.canvas(ui);
-                });
+                self.plant_import.controls(ui);
+                ui.separator();
+                egui::ScrollArea::both()
+                    .id_salt("wmk-planta-native-scroll")
+                    .auto_shrink([false, false])
+                    .show(ui, |ui| {
+                        self.plant_import.canvas(ui);
+                    });
             });
         if !open { self.plant_import.open = false; }
     }
