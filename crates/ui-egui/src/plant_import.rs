@@ -167,8 +167,9 @@ impl PlantImport {
 impl BimApp {
     pub(crate) fn import_plant_dialog(&mut self, ctx: &Context) {
         let dialog = rfd::AsyncFileDialog::new().add_filter("Plantas JPG/PNG", &["jpg", "jpeg", "png"]);
+        let context = ctx.clone();
         self.ask_files(ctx, dialog, move |app, paths| {
-            if let Some(path) = paths.into_iter().next() { app.plant_import.load(ctx, &path); }
+            if let Some(path) = paths.into_iter().next() { app.plant_import.load(&context, &path); }
         });
     }
 
