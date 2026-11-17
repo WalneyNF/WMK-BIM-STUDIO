@@ -7,7 +7,7 @@ use serde_json::json;
 use crate::BimApp;
 
 #[derive(Clone, Copy, PartialEq, Eq)]
-enum Mode { Calibrate, Trace, Pan }
+enum Mode { Calibrate, Trace, Measure, Pan }
 
 pub(crate) struct PlantImport {
     open: bool,
@@ -24,6 +24,8 @@ pub(crate) struct PlantImport {
     zoom: f32,
     show_measurements: bool,
     snap: bool,
+    opacity: f32,
+    measurements: Vec<(Pos2,Pos2)>,
 }
 
 impl Default for PlantImport {
@@ -36,6 +38,8 @@ impl Default for PlantImport {
             zoom: 1.0,
             show_measurements: true,
             snap: true,
+            opacity: 1.0,
+            measurements: Vec::new(),
         }
     }
 }
@@ -63,6 +67,7 @@ impl PlantImport {
             self.path = Some(path.to_path_buf());
             self.pixels = size;
             self.lines.clear();
+            self.measurements.clear();
             self.first = None;
             self.pixels_per_meter = None;
             self.mode = Mode::Calibrate;
@@ -93,7 +98,11 @@ impl PlantImport {
             "start_mm": {"x": a.x as f64 * 1000.0 / scale as f64, "y": a.y as f64 * 1000.0 / scale as f64},
             "end_mm": {"x": b.x as f64 * 1000.0 / scale as f64, "y": b.y as f64 * 1000.0 / scale as f64}
         })).collect();
+        let measures: Vec<_> = self.measurements.iter().map(|(a,b)| json!({
+            "start_px": [a.x,a.y], "end_px":[b.x,b.y], "length_m": a.distance(*b)/scale
+        })).collect();
         let data = json!({
+            "measurements": measures,
             "format": "wmk-plan-trace-v1",
             "source": self.path.as_ref().and_then(|p| p.file_name()).map(|s| s.to_string_lossy().to_string()),
             "units": "mm",
@@ -120,9 +129,11 @@ impl PlantImport {
         ui.horizontal_wrapped(|ui| {
             ui.selectable_value(&mut self.mode, Mode::Calibrate, "1. Calibrar");
             ui.selectable_value(&mut self.mode, Mode::Trace, "2. Traçar parede");
+            ui.selectable_value(&mut self.mode, Mode::Measure, "3. Trena virtual");
             if ui.button("Desfazer").clicked() { self.lines.pop(); self.first = None; }
             if ui.button("Limpar").clicked() { self.lines.clear(); self.first = None; }
             if ui.button("Exportar JSON").clicked() { self.save_json(); }
+            if ui.button("Limpar trena").clicked() { self.measurements.clear(); self.first = None; }
         });
         if let Some(px) = self.pixels_per_meter {
             ui.label(format!("Escala: {:.2} pixels/metro · {} segmentos", px, self.lines.len()));
@@ -144,6 +155,7 @@ impl PlantImport {
         ui.horizontal_wrapped(|ui| {
             ui.checkbox(&mut self.show_measurements, "Mostrar comprimentos");
             ui.checkbox(&mut self.snap, "Snap nos extremos");
+            ui.add(egui::Slider::new(&mut self.opacity, 0.05..=1.0).text("Opacidade da planta"));
         });
         ui.label(&self.message);
         ui.label("Use as barras de rolagem horizontal/vertical para navegar na imagem ampliada. O zoom não altera as medidas reais.");
@@ -160,7 +172,8 @@ impl PlantImport {
             .clamp(0.01, 1.0);
         let ratio = fit * self.zoom;
         let (rect, response) = ui.allocate_exact_size(native * ratio, Sense::click());
-        ui.painter().image(texture.id(), rect, Rect::from_min_max(Pos2::ZERO, Pos2::new(1.0, 1.0)), Color32::WHITE);
+        let tint = Color32::from_white_alpha((self.opacity * 255.0) as u8);
+        ui.painter().image(texture.id(), rect, Rect::from_min_max(Pos2::ZERO, Pos2::new(1.0, 1.0)), tint);
         let to_screen = |p: Pos2| rect.min + p.to_vec2() * ratio;
         for (a, b) in &self.lines {
             ui.painter().line_segment([to_screen(*a), to_screen(*b)], Stroke::new(3.0, Color32::RED));
@@ -170,6 +183,14 @@ impl PlantImport {
                     let center = to_screen(Pos2::new((a.x+b.x)*0.5,(a.y+b.y)*0.5));
                     ui.painter().text(center, egui::Align2::CENTER_BOTTOM, format!("{length:.2} m"), egui::FontId::proportional(13.0), Color32::YELLOW);
                 }
+            }
+        }
+        for (a, b) in &self.measurements {
+            ui.painter().line_segment([to_screen(*a), to_screen(*b)], Stroke::new(2.0, Color32::LIGHT_BLUE));
+            if let Some(px) = self.pixels_per_meter {
+                let value = a.distance(*b) / px;
+                let center = to_screen(Pos2::new((a.x+b.x)*0.5,(a.y+b.y)*0.5));
+                ui.painter().text(center, egui::Align2::CENTER_BOTTOM, format!("{value:.2} m"), egui::FontId::proportional(13.0), Color32::LIGHT_BLUE);
             }
         }
         if let Some(a) = self.first {
@@ -202,6 +223,11 @@ impl PlantImport {
                             self.mode = Mode::Trace;
                             self.message = "Escala definida. Agora marque o início e o fim de cada parede.".into();
                         }
+                    } else if self.mode == Mode::Measure {
+                        self.measurements.push((a,p));
+                        let value = self.pixels_per_meter.map(|px| format!("{:.2} m",distance/px))
+                            .unwrap_or_else(|| format!("{distance:.0} pixels (calibre primeiro)"));
+                        self.message = format!("Trena: {value}. Medições feitas: {}",self.measurements.len());
                     } else {
                         self.lines.push((a, p));
                         self.message = format!("Segmentos marcados: {}. Use Exportar JSON para guardar.", self.lines.len());
